@@ -1,3 +1,13 @@
 steps:
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: ['echo', 'Hello, Cloud Build! This is a placeholder.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t',
+    'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/data-downloader:latest',
+    '-f',
+    'scripts/Dockerfile.download',
+    './scripts'
+  ]
+
+images:
+- 'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/data-downloader:latest'
