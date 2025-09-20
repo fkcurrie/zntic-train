@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 import numpy as np
+import json
 
 def main():
     """
@@ -26,10 +27,8 @@ def main():
     df = pd.read_csv(io.StringIO(features_data.decode("utf-8")))
 
     # --- Placeholder for Labels ---
-    # In a real scenario, you would have a separate file with labels.
-    # For now, we'll generate a placeholder 'zoonotic' column.
     print("Generating placeholder labels...")
-    np.random.seed(42) # for reproducibility
+    np.random.seed(42)
     df['zoonotic'] = np.random.randint(0, 2, df.shape[0])
     # --- End Placeholder ---
 
@@ -38,6 +37,13 @@ def main():
     X = df.drop('zoonotic', axis=1)
     y = df['zoonotic']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # --- Save Feature Columns ---
+    print("Saving feature columns to GCS...")
+    feature_columns = X_train.columns.tolist()
+    columns_blob = bucket.blob("feature_columns.json")
+    columns_blob.upload_from_string(json.dumps(feature_columns))
+    # --- End Save Feature Columns ---
 
     # Train a simple Logistic Regression model
     print("Training Logistic Regression model...")
@@ -60,7 +66,7 @@ def main():
     model_blob = bucket.blob(model_filename)
     model_blob.upload_from_filename(model_filename)
 
-    print("Training complete. Model uploaded to GCS.")
+    print("Training complete. Model and feature columns uploaded to GCS.")
 
 if __name__ == "__main__":
     main()

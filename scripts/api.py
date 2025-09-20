@@ -4,7 +4,7 @@ import pandas as pd
 from flask import Flask, request, jsonify
 from google.cloud import storage
 import io
-import numpy as np
+import json
 
 app = Flask(__name__)
 
@@ -14,10 +14,10 @@ storage_client = None
 bucket = None
 feature_columns = None
 
-def download_model_and_features():
+def download_model_and_columns():
     """Downloads the model and feature columns from GCS."""
     global model, feature_columns
-    print("Downloading model and features from GCS...")
+    print("Downloading model and feature columns from GCS...")
 
     # Download model
     model_blob = bucket.blob("model.joblib")
@@ -26,21 +26,20 @@ def download_model_and_features():
     print("Model downloaded and loaded successfully.")
 
     # Download feature columns
-    features_blob = bucket.blob("features.csv")
-    features_data = features_blob.download_as_string()
-    features_df = pd.read_csv(io.StringIO(features_data.decode("utf-8")), nrows=0) # Read only headers
-    feature_columns = features_df.columns.tolist()
+    columns_blob = bucket.blob("feature_columns.json")
+    columns_data = columns_blob.download_as_string()
+    feature_columns = json.loads(columns_data)
     print(f"Feature columns loaded. Expecting {len(feature_columns)} features.")
 
 
 @app.before_request
-def load_model_and_features():
+def load_model_and_columns():
     """Load the model and feature columns before the first request."""
     global storage_client, bucket
     if model is None:
         storage_client = storage.Client()
         bucket = storage_client.get_bucket("zntic-data")
-        download_model_and_features()
+        download_model_and_columns()
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -54,13 +53,12 @@ def predict():
         if len(features) != len(feature_columns):
             return jsonify({'error': f'Invalid number of features. Expected {len(feature_columns)}, got {len(features)}.'}), 400
 
-        # Create a DataFrame with the correct column names and order
+        # Create a DataFrame with the correct column names
         df = pd.DataFrame([features], columns=feature_columns)
-        df = df[feature_columns] # Ensure column order
 
         # Make a prediction
-        prediction = model.predict(df.drop('zoonotic', axis=1))
-        prediction_proba = model.predict_proba(df.drop('zoonotic', axis=1))
+        prediction = model.predict(df)
+        prediction_proba = model.predict_proba(df)
 
         # Return the result
         result = {
