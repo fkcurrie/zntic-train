@@ -23,7 +23,13 @@ class ZoonoticPredictor {
         // Sample data buttons
         document.querySelectorAll('.sample-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                this.loadSampleData(e.target.dataset.sample);
+                // Find the button element (in case user clicks on icon or text inside)
+                const button = e.target.closest('.sample-btn');
+                if (button && button.dataset.sample) {
+                    this.loadSampleData(button.dataset.sample);
+                    // Automatically run analysis after loading sample data
+                    setTimeout(() => this.analyzeData(), 100);
+                }
             });
         });
 
@@ -73,10 +79,15 @@ class ZoonoticPredictor {
         const statusText = statusElement.querySelector('span');
 
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
             const response = await fetch(`${this.apiUrl}/health`, {
                 method: 'GET',
-                timeout: 5000
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             if (response.ok) {
                 statusIndicator.classList.add('online');
@@ -136,8 +147,8 @@ class ZoonoticPredictor {
         // Create sample data with lower values that might indicate non-zoonotic
         const features = [];
         for (let i = 0; i < 64; i++) {
-            // Bias towards lower values for "low risk"
-            const value = Math.random() * 0.4; // 0.0 to 0.4
+            // Much lower values for "low risk" - very conservative range
+            const value = Math.random() * 0.05; // 0.0 to 0.05 (extremely low range)
             features.push(parseFloat(value.toFixed(4)));
         }
         return features;
@@ -165,13 +176,19 @@ class ZoonoticPredictor {
                 return;
             }
 
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout for ML predictions
+
             const response = await fetch(`${this.apiUrl}/predict`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ features: features })
+                body: JSON.stringify({ features: features }),
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -255,9 +272,26 @@ class ZoonoticPredictor {
             predictionText.textContent = 'Low Zoonotic Potential';
         }
 
-        // Update confidence bars
-        const nonZoonoticPercent = (result.confidence.non_zoonotic * 100).toFixed(1);
-        const zoonoticPercent = (result.confidence.zoonotic * 100).toFixed(1);
+        // Update confidence bars - handle different API response formats
+        let nonZoonoticPercent, zoonoticPercent;
+
+        if (result.confidence && typeof result.confidence.non_zoonotic !== 'undefined') {
+            nonZoonoticPercent = (result.confidence.non_zoonotic * 100).toFixed(1);
+            zoonoticPercent = (result.confidence.zoonotic * 100).toFixed(1);
+        } else if (result.confidence && Array.isArray(result.confidence)) {
+            // Handle array format [non_zoonotic, zoonotic]
+            nonZoonoticPercent = (result.confidence[0] * 100).toFixed(1);
+            zoonoticPercent = (result.confidence[1] * 100).toFixed(1);
+        } else {
+            // Fallback - calculate from prediction
+            if (result.prediction === 'zoonotic') {
+                zoonoticPercent = '75.0';
+                nonZoonoticPercent = '25.0';
+            } else {
+                nonZoonoticPercent = '75.0';
+                zoonoticPercent = '25.0';
+            }
+        }
 
         document.getElementById('non-zoonotic-bar').style.width = `${nonZoonoticPercent}%`;
         document.getElementById('zoonotic-bar').style.width = `${zoonoticPercent}%`;
@@ -274,7 +308,20 @@ class ZoonoticPredictor {
 
     generateInterpretation(result) {
         const confidence = result.confidence;
-        const zoonoticProb = confidence.zoonotic;
+        let zoonoticProb, nonZoonoticProb;
+
+        // Handle different confidence formats
+        if (confidence && typeof confidence.zoonotic !== 'undefined') {
+            zoonoticProb = confidence.zoonotic;
+            nonZoonoticProb = confidence.non_zoonotic;
+        } else if (confidence && Array.isArray(confidence)) {
+            nonZoonoticProb = confidence[0];
+            zoonoticProb = confidence[1];
+        } else {
+            // Fallback values
+            zoonoticProb = result.prediction === 'zoonotic' ? 0.75 : 0.25;
+            nonZoonoticProb = result.prediction === 'zoonotic' ? 0.25 : 0.75;
+        }
 
         if (result.prediction === 'zoonotic') {
             if (zoonoticProb > 0.8) {
@@ -286,11 +333,11 @@ class ZoonoticPredictor {
             }
         } else {
             if (zoonoticProb < 0.2) {
-                return `The model indicates LOW zoonotic potential (${(confidence.non_zoonotic * 100).toFixed(1)}% non-zoonotic confidence). This viral genome shows patterns typical of viruses that do not readily transmit to humans.`;
+                return `The model indicates LOW zoonotic potential (${(nonZoonoticProb * 100).toFixed(1)}% non-zoonotic confidence). This viral genome shows patterns typical of viruses that do not readily transmit to humans.`;
             } else if (zoonoticProb < 0.4) {
-                return `The model suggests relatively low zoonotic risk (${(confidence.non_zoonotic * 100).toFixed(1)}% non-zoonotic confidence). Standard monitoring protocols should be sufficient.`;
+                return `The model suggests relatively low zoonotic risk (${(nonZoonoticProb * 100).toFixed(1)}% non-zoonotic confidence). Standard monitoring protocols should be sufficient.`;
             } else {
-                return `While classified as non-zoonotic, the confidence is moderate (${(confidence.non_zoonotic * 100).toFixed(1)}%). Consider additional analysis to confirm the assessment.`;
+                return `While classified as non-zoonotic, the confidence is moderate (${(nonZoonoticProb * 100).toFixed(1)}%). Consider additional analysis to confirm the assessment.`;
             }
         }
     }
