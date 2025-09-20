@@ -1,19 +1,19 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: train-model
+  name: training-job
 spec:
   template:
     spec:
       serviceAccountName: zntic-gke-sa
       containers:
-      - name: train-model
-        image: gcr.io/gca-gke-2025/training
-        command: ["python", "train.py"]
+      - name: feature-engineering
+        image: gcr.io/gca-gke-2025/training:latest
+        command: ["python", "/app/feature_engineering.py"]
         resources:
           limits:
             nvidia.com/gpu: 1
       restartPolicy: Never
-      imagePullSecrets:
-      - name: gcr-secret
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-tesla-t4
   backoffLimit: 4
