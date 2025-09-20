@@ -798,6 +798,72 @@ textarea:focus {
     color: #94a3b8;
 }
 
+/* Last Updated Footer Styles */
+.last-updated {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.last-updated h4 {
+    color: #e2e8f0;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.update-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+.update-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #334155;
+}
+
+.update-item:last-child {
+    border-bottom: none;
+}
+
+.update-label {
+    font-weight: 500;
+    color: #cbd5e1;
+}
+
+.update-date {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+@media (min-width: 768px) {
+    .update-info {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .update-item {
+        flex-direction: column;
+        text-align: center;
+        border-bottom: none;
+        border-right: 1px solid #334155;
+        padding: 0 1rem;
+    }
+
+    .update-item:last-child {
+        border-right: none;
+    }
+
+    .update-label {
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+}
+
 /* Utility Classes */
 .hidden {
     display: none !important;

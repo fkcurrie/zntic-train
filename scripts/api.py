@@ -1,12 +1,14 @@
 import os
 import joblib
 import pandas as pd
-from flask import Flask, request, jsonify, send_from_directory, render_template_string
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from google.cloud import storage
 import io
 import json
 
-app = Flask(__name__, static_folder='web', static_url_path='/static')
+app = Flask(__name__)
+CORS(app)
 
 # --- Global variables ---
 # Test change to verify smart triggers work correctly
@@ -79,15 +81,44 @@ def health_check():
     """Health check endpoint."""
     return "OK", 200
 
-@app.route('/')
-def index():
-    """Serve the main website."""
-    return send_from_directory('web', 'index.html')
+@app.route('/info', methods=['GET'])
+def info():
+    """Returns build and system information."""
+    import datetime
+    import os
 
-@app.route('/<path:filename>')
-def serve_static(filename):
-    """Serve static files from the web directory."""
-    return send_from_directory('web', filename)
+    # Try to get build timestamp from environment or container
+    build_date = os.environ.get('BUILD_DATE', 'Unknown')
+
+    # If no build date, try to get from file modification time
+    if build_date == 'Unknown':
+        try:
+            # Get the modification time of this script as fallback
+            stat = os.stat(__file__)
+            build_date = datetime.datetime.fromtimestamp(stat.st_mtime, tz=datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+        except:
+            build_date = 'Unknown'
+
+    # Try to get model training date from GCS metadata
+    model_training_date = 'Unknown'
+    try:
+        if bucket:
+            model_blob = bucket.blob("model.joblib")
+            if model_blob.exists():
+                model_blob.reload()
+                if model_blob.time_created:
+                    model_training_date = model_blob.time_created.strftime('%Y-%m-%d %H:%M:%S UTC')
+    except Exception as e:
+        print(f"Error getting model training date: {e}")
+
+    return jsonify({
+        'api_version': '0.25',
+        'build_date': build_date,
+        'model_training_date': model_training_date,
+        'status': 'operational'
+    })
+
+# API endpoints only - web interface served by separate nginx service
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))

@@ -10,6 +10,7 @@ class ZoonoticPredictor {
         this.setupEventListeners();
         this.checkApiStatus();
         this.setupTabSystem();
+        this.fetchBuildDates();
     }
 
     setupEventListeners() {
@@ -399,6 +400,49 @@ class ZoonoticPredictor {
 
     hideError() {
         document.getElementById('error').classList.add('hidden');
+    }
+
+    async fetchBuildDates() {
+        // Set web interface build date to current time (since this deployment is happening now)
+        const webBuildDate = new Date().toISOString().slice(0, 19).replace('T', ' ') + ' UTC';
+        document.getElementById('web-build-date').textContent = webBuildDate;
+
+        // Try to fetch API build information
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const response = await fetch(`${this.apiUrl}/info`, {
+                method: 'GET',
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                const info = await response.json();
+
+                // Display API build date if available
+                if (info.build_date) {
+                    document.getElementById('api-build-date').textContent = info.build_date;
+                } else {
+                    document.getElementById('api-build-date').textContent = 'Unknown';
+                }
+
+                // Display model training date if available
+                if (info.model_training_date) {
+                    document.getElementById('model-build-date').textContent = info.model_training_date;
+                } else {
+                    document.getElementById('model-build-date').textContent = 'Unknown';
+                }
+            } else {
+                throw new Error('API info not available');
+            }
+        } catch (error) {
+            console.error('Failed to fetch build dates:', error);
+            document.getElementById('api-build-date').textContent = 'Unavailable';
+            document.getElementById('model-build-date').textContent = 'Unavailable';
+        }
     }
 }
 
