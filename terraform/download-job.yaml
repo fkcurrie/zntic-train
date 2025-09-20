@@ -8,5 +8,16 @@ spec:
       containers:
       - name: data-downloader
         image: us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/data-downloader:latest
+        volumeMounts:
+        - name: gcs-credentials-volume
+          mountPath: /app/gcp-credentials
+          readOnly: true
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /app/gcp-credentials/gcp-credentials.json
+      volumes:
+      - name: gcs-credentials-volume
+        secret:
+          secretName: gcs-credentials
       restartPolicy: Never
   backoffLimit: 4

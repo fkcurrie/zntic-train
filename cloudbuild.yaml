@@ -8,6 +8,16 @@ steps:
     'scripts/Dockerfile.download',
     './scripts'
   ]
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t',
+    'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/feature-engineering:latest',
+    '-f',
+    'scripts/Dockerfile.feature-engineering',
+    './scripts'
+  ]
 
 images:
 - 'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/data-downloader:latest'
+- 'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/feature-engineering:latest'

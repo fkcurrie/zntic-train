@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 5.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.0"
+    }
   }
 }
 
@@ -11,6 +15,14 @@ provider "google" {
   project = "gca-gke-2025"
   region  = "us-central1"
 }
+
+provider "kubernetes" {
+  host                   = "https://${google_container_cluster.zntic_train.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(google_container_cluster.zntic_train.master_auth[0].cluster_ca_certificate)
+}
+
+data "google_client_config" "default" {}
 
 # A GCS bucket to store the training data
 resource "google_storage_bucket" "training_data" {
@@ -55,7 +67,8 @@ resource "google_container_node_pool" "default_pool" {
   node_count = 1
 
   node_config {
-    machine_type = "e2-medium"
+    machine_type    = "e2-medium"
+    disk_size_gb    = 100 # Increased disk size
     service_account = "zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
@@ -80,7 +93,8 @@ resource "google_container_node_pool" "gpu_training_pool" {
   }
 
   node_config {
-    machine_type = "n1-standard-4" # A good general-purpose machine type for a T4
+    machine_type    = "n1-standard-4" # A good general-purpose machine type for a T4
+    disk_size_gb    = 100
     service_account = "zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
     
     guest_accelerator {
