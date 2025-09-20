@@ -21,6 +21,18 @@ resource "google_storage_bucket" "training_data" {
   uniform_bucket_level_access = true
 }
 
+resource "google_storage_bucket_iam_member" "gke_storage_access" {
+  bucket = google_storage_bucket.training_data.name
+  role   = "roles/storage.admin"
+  member = "serviceAccount:zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
+}
+
+resource "google_project_iam_member" "gke_artifact_reader" {
+  project = "gca-gke-2025"
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
+}
+
 resource "google_container_cluster" "zntic_train" {
   name     = "zntic-train"
   location = "us-central1"
@@ -44,6 +56,7 @@ resource "google_container_node_pool" "default_pool" {
 
   node_config {
     machine_type = "e2-medium"
+    service_account = "zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
@@ -68,6 +81,7 @@ resource "google_container_node_pool" "gpu_training_pool" {
 
   node_config {
     machine_type = "n1-standard-4" # A good general-purpose machine type for a T4
+    service_account = "zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
     
     guest_accelerator {
       type  = "nvidia-tesla-t4"

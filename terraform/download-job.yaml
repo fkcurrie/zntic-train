@@ -1,0 +1,12 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zntic-data-downloader
+spec:
+  template:
+    spec:
+      containers:
+      - name: data-downloader
+        image: us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/data-downloader:latest
+      restartPolicy: Never
+  backoffLimit: 4

@@ -2,14 +2,13 @@
 
 This project aims to build a cloud-native platform for predicting the zoonotic potential of avian influenza viruses, based on the methods described in the paper "An AI for an AI: identifying zoonotic potential of avian influenza viruses via genomic machine learning."
 
-The platform will be built on Google Cloud Platform (GCP) and is designed to be scalable, reproducible, and automated.
+The platform is built on Google Cloud Platform (GCP) and is designed to be scalable, reproducible, and automated.
 
-## Features
+## Project Status
 
-*   **Prediction API:** A web-based API to submit a viral genome sequence and receive a zoonotic risk score.
-*   **Explainable AI:** Identifies and highlights the specific genomic motifs that most influence a prediction.
-*   **Automated Training:** A CI/CD pipeline to automatically retrain the model when new data or code is available.
-*   **Reproducible Infrastructure:** All cloud infrastructure is defined as code using Terraform, allowing for easy replication.
+**Infrastructure:** The core infrastructure, consisting of a GKE cluster and a GCS bucket, has been successfully provisioned using Terraform.
+
+**Data Ingestion:** A containerized data download script has been developed. The process of running this as a Kubernetes job on the GKE cluster to populate the GCS bucket is currently in progress.
 
 ## Cloud Architecture
 
