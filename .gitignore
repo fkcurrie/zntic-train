@@ -14,3 +14,6 @@ data/
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+
+# Secrets
+gcr-key.json
