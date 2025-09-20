@@ -5,7 +5,8 @@ import io
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 import numpy as np
 import json
@@ -15,39 +16,31 @@ def main(args):
     """
     Main function to train the model.
     """
-    # Set up GCS client
     storage_client = storage.Client()
     bucket = storage_client.get_bucket("zntic-data")
 
-    # Download the features from GCS
     print("Downloading features from GCS...")
     blob = bucket.blob("features.csv")
     features_data = blob.download_as_string()
 
-    # Load the features into a pandas DataFrame
     print("Loading features into DataFrame...")
     df = pd.read_csv(io.StringIO(features_data.decode("utf-8")))
 
-    # --- Placeholder for Labels ---
     print("Generating placeholder labels...")
     np.random.seed(42)
     df['zoonotic'] = np.random.randint(0, 2, df.shape[0])
-    # --- End Placeholder ---
 
-    # Split the data into training and testing sets
     print("Splitting data into training and testing sets...")
     X = df.drop('zoonotic', axis=1)
     y = df['zoonotic']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # --- Save Feature Columns ---
     print(f"Saving feature columns to GCS for model '{args.model_name}'...")
     feature_columns = X_train.columns.tolist()
     columns_path = f"models/{args.model_name}/feature_columns.json"
     columns_blob = bucket.blob(columns_path)
     columns_blob.upload_from_string(json.dumps(feature_columns))
     
-    # --- Model Training ---
     print(f"Training {args.model_type} model...")
     hyperparams = json.loads(args.hyperparams)
     
@@ -55,23 +48,26 @@ def main(args):
         model = LogisticRegression(**hyperparams)
     elif args.model_type == 'RandomForestClassifier':
         model = RandomForestClassifier(**hyperparams)
+    elif args.model_type == 'SVC':
+        # Add probability=True to get predict_proba method
+        hyperparams['probability'] = True
+        model = SVC(**hyperparams)
+    elif args.model_type == 'GradientBoostingClassifier':
+        model = GradientBoostingClassifier(**hyperparams)
     else:
         raise ValueError(f"Unsupported model type: {args.model_type}")
 
     model.fit(X_train, y_train)
 
-    # Evaluate the model
     print("Evaluating model...")
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     print(f"Model Accuracy: {acc:.2f}")
 
-    # Save the trained model to a local file
     print("Saving model to local file...")
     model_filename = 'model.joblib'
     joblib.dump(model, model_filename)
 
-    # Upload the model to GCS
     print(f"Uploading model to GCS at 'models/{args.model_name}/'...")
     model_path = f"models/{args.model_name}/model.joblib"
     model_blob = bucket.blob(model_path)
@@ -85,7 +81,7 @@ if __name__ == "__main__":
         '--model-type', 
         type=str, 
         required=True, 
-        choices=['LogisticRegression', 'RandomForestClassifier'],
+        choices=['LogisticRegression', 'RandomForestClassifier', 'SVC', 'GradientBoostingClassifier'],
         help='The type of model to train.'
     )
     parser.add_argument(

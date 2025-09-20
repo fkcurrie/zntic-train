@@ -36,9 +36,26 @@ class RetrainingDashboard {
                 "max_iter": 1000,
                 "solver": "lbfgs"
             };
+        } else if (modelType === 'SVC') {
+            placeholder = {
+                "C": 1.0,
+                "kernel": "rbf",
+                "gamma": "scale",
+                "random_state": 42
+            };
+        } else if (modelType === 'GradientBoostingClassifier') {
+            placeholder = {
+                "n_estimators": 100,
+                "learning_rate": 0.1,
+                "max_depth": 3,
+                "random_state": 42
+            };
         }
 
+
         textarea.placeholder = JSON.stringify(placeholder, null, 4);
+        // Clear the user's text to show the new placeholder
+        textarea.value = '';
     }
 
     async startTraining() {
