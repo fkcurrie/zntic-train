@@ -50,6 +50,14 @@ class RetrainingDashboard {
                 "max_depth": 3,
                 "random_state": 42
             };
+        } else if (modelType === 'NeuralNetwork') {
+            placeholder = {
+                "layers": [128, 64],
+                "activation": "relu",
+                "optimizer": "adam",
+                "epochs": 50,
+                "batch_size": 32
+            };
         }
 
 

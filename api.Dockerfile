@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application scripts into the container
 COPY scripts/api.py /app/
 COPY training-job.yaml /app/
+COPY training-job-gpu.yaml /app/
 
 # Copy the web files (though not served by this container, they might be needed for context)
 COPY web/ /app/web/

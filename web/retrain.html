@@ -38,7 +38,7 @@
                             <h3><i class="fas fa-brain"></i> Model Configuration</h3>
                             <div class="input-group">
                                 <label for="model-name">New Model Name</label>
-                                <input type="text" id="model-name" placeholder="e.g., random-forest-exp-1">
+                                <input type="text" id="model-name" placeholder="e.g., neural-net-exp-1">
                                 <small>A unique name for your trained model. Use letters, numbers, and dashes.</small>
                             </div>
                             <div class="input-group">
@@ -48,6 +48,7 @@
                                     <option value="LogisticRegression">Logistic Regression</option>
                                     <option value="SVC">Support Vector Classifier (SVC)</option>
                                     <option value="GradientBoostingClassifier">Gradient Boosting Classifier</option>
+                                    <option value="NeuralNetwork">Neural Network (GPU Required)</option>
                                 </select>
                             </div>
                         </div>
@@ -57,7 +58,7 @@
                             <h3><i class="fas fa-sliders-h"></i> Hyperparameters</h3>
                             <div class="input-group">
                                 <label for="hyperparams">Parameters (JSON format)</label>
-                                <textarea id="hyperparams" rows="6" placeholder='{
+                                <textarea id="hyperparams" rows="8" placeholder='{
     "n_estimators": 100,
     "max_depth": 10,
     "random_state": 42

@@ -11,6 +11,26 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 import json
 import argparse
+import tensorflow as tf
+
+def create_neural_network(input_shape, hyperparams):
+    """Builds and compiles a Keras Sequential model."""
+    layers = hyperparams.get("layers", [128, 64])
+    activation = hyperparams.get("activation", "relu")
+    optimizer = hyperparams.get("optimizer", "adam")
+    
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Input(shape=(input_shape,)))
+    
+    for units in layers:
+        model.add(tf.keras.layers.Dense(units, activation=activation))
+        
+    model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
+    
+    model.compile(optimizer=optimizer,
+                  loss='binary_crossentropy',
+                  metrics=['accuracy'])
+    return model
 
 def main(args):
     """
@@ -44,32 +64,42 @@ def main(args):
     print(f"Training {args.model_type} model...")
     hyperparams = json.loads(args.hyperparams)
     
-    if args.model_type == 'LogisticRegression':
-        model = LogisticRegression(**hyperparams)
-    elif args.model_type == 'RandomForestClassifier':
-        model = RandomForestClassifier(**hyperparams)
-    elif args.model_type == 'SVC':
-        # Add probability=True to get predict_proba method
-        hyperparams['probability'] = True
-        model = SVC(**hyperparams)
-    elif args.model_type == 'GradientBoostingClassifier':
-        model = GradientBoostingClassifier(**hyperparams)
+    if args.model_type == 'NeuralNetwork':
+        model = create_neural_network(X_train.shape[1], hyperparams)
+        epochs = hyperparams.get("epochs", 10)
+        batch_size = hyperparams.get("batch_size", 32)
+        model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.2)
+        # For evaluation, we need to get the raw predictions
+        y_pred_proba = model.predict(X_test)
+        y_pred = (y_pred_proba > 0.5).astype(int)
     else:
-        raise ValueError(f"Unsupported model type: {args.model_type}")
+        if args.model_type == 'LogisticRegression':
+            model = LogisticRegression(**hyperparams)
+        elif args.model_type == 'RandomForestClassifier':
+            model = RandomForestClassifier(**hyperparams)
+        elif args.model_type == 'SVC':
+            hyperparams['probability'] = True
+            model = SVC(**hyperparams)
+        elif args.model_type == 'GradientBoostingClassifier':
+            model = GradientBoostingClassifier(**hyperparams)
+        else:
+            raise ValueError(f"Unsupported model type: {args.model_type}")
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
 
-    model.fit(X_train, y_train)
-
-    print("Evaluating model...")
-    y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     print(f"Model Accuracy: {acc:.2f}")
 
     print("Saving model to local file...")
-    model_filename = 'model.joblib'
-    joblib.dump(model, model_filename)
+    if args.model_type == 'NeuralNetwork':
+        model_filename = 'model.keras'
+        model.save(model_filename)
+    else:
+        model_filename = 'model.joblib'
+        joblib.dump(model, model_filename)
 
     print(f"Uploading model to GCS at 'models/{args.model_name}/'...")
-    model_path = f"models/{args.model_name}/model.joblib"
+    model_path = f"models/{args.model_name}/{model_filename}"
     model_blob = bucket.blob(model_path)
     model_blob.upload_from_filename(model_filename)
 
@@ -81,7 +111,7 @@ if __name__ == "__main__":
         '--model-type', 
         type=str, 
         required=True, 
-        choices=['LogisticRegression', 'RandomForestClassifier', 'SVC', 'GradientBoostingClassifier'],
+        choices=['LogisticRegression', 'RandomForestClassifier', 'SVC', 'GradientBoostingClassifier', 'NeuralNetwork'],
         help='The type of model to train.'
     )
     parser.add_argument(

@@ -9,3 +9,4 @@ kubernetes
 # Trigger build
 # Verification push
 # Final verification
+tensorflow
