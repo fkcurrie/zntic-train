@@ -10,7 +10,15 @@ spec:
       - name: download-data
         image: gcr.io/gca-gke-2025/data-processing
         command: ["python", "download_data.py"]
+        volumeMounts:
+        - name: gcp-sa-key
+          mountPath: /app/secrets
+          readOnly: true
       restartPolicy: Never
       imagePullSecrets:
       - name: gcr-secret
+      volumes:
+      - name: gcp-sa-key
+        secret:
+          secretName: gcr-secret
   backoffLimit: 4
