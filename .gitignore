@@ -17,3 +17,7 @@ terraform.tfstate.backup
 
 # Secrets
 gcr-key.json
+
+# AI Assistant Files
+claude.md
+gemini.md
