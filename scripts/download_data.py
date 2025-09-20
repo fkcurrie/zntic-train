@@ -7,6 +7,7 @@ def download_and_upload_to_gcs():
     """
     Downloads avian influenza data from NCBI and uploads it to a GCS bucket.
     This function is part of the smart trigger testing.
+    Testing automatic trigger with fixed path filtering.
     """
     # Set up GCS client
     storage_client = storage.Client()
