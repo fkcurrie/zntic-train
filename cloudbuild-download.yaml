@@ -5,3 +5,6 @@ steps:
   args: ['push', 'gcr.io/gca-gke-2025/download-data']
 images:
 - 'gcr.io/gca-gke-2025/download-data'
+logsBucket: 'gs://zntic-data/logs'
+options:
+  logging: GCS_ONLY
