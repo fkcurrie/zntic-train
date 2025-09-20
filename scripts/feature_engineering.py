@@ -2,6 +2,8 @@ import os
 from Bio import SeqIO
 import pandas as pd
 from collections import defaultdict
+from google.cloud import storage
+import io
 
 def get_kmer_composition(sequence, k):
     """
@@ -17,16 +19,16 @@ def main():
     """
     Main function to perform feature engineering.
     """
-    # Path to the downloaded data
-    data_file = os.path.join("data", "ncbi_dataset", "data", "genomic.fna")
+    # Set up GCS client
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket("zntic-data")
 
-    # Check if the data file exists
-    if not os.path.exists(data_file):
-        print(f"Error: {data_file} not found. Please run download_data.py first.")
-        exit()
+    # Download the data from GCS
+    blob = bucket.blob("avian_influenza.fasta")
+    fasta_records = blob.download_as_string().decode("utf-8")
 
     # Parse the FASTA file
-    records = list(SeqIO.parse(data_file, "fasta"))
+    records = list(SeqIO.parse(io.StringIO(fasta_records), "fasta"))
 
     # Calculate k-mer composition for each record
     k = 3
@@ -39,11 +41,11 @@ def main():
     df = pd.DataFrame(kmer_compositions)
     df = df.fillna(0)
 
-    # Save the DataFrame to a CSV file
-    output_file = os.path.join("data", "features.csv")
-    df.to_csv(output_file, index=False)
+    # Save the DataFrame to a CSV file in GCS
+    output_blob = bucket.blob("features.csv")
+    output_blob.upload_from_string(df.to_csv(index=False), "text/csv")
 
-    print(f"Saved features to {output_file}")
+    print("Saved features to GCS")
 
 if __name__ == "__main__":
     main()
