@@ -10,6 +10,6 @@ steps:
 images:
 - 'gcr.io/gca-gke-2025/data-processing'
 - 'gcr.io/gca-gke-2025/training'
+logsBucket: 'gs://zntic-data/logs'
 options:
   logging: GCS_ONLY
-  logsBucket: 'gs://zntic-data/logs'
