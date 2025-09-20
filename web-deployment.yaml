@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zoonotic-web-deployment
+  labels:
+    app: zoonotic-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zoonotic-web
+  template:
+    metadata:
+      labels:
+        app: zoonotic-web
+    spec:
+      containers:
+      - name: web
+        image: gcr.io/gca-gke-2025/zoonotic-web:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoonotic-web-service
+spec:
+  selector:
+    app: zoonotic-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

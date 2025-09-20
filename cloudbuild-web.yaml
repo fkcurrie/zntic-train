@@ -1,0 +1,20 @@
+steps:
+  # Build and push the web container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'web.Dockerfile'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/zoonotic-web'
+      - '.'
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/zoonotic-web'
+
+images:
+  - 'gcr.io/$PROJECT_ID/zoonotic-web'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
