@@ -1,12 +1,12 @@
 import os
 import joblib
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, render_template_string
 from google.cloud import storage
 import io
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../web', static_url_path='/static')
 
 # --- Global variables ---
 # Test change to verify smart triggers work correctly
@@ -78,6 +78,16 @@ def predict():
 def health_check():
     """Health check endpoint."""
     return "OK", 200
+
+@app.route('/')
+def index():
+    """Serve the main website."""
+    return send_from_directory('../web', 'index.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    """Serve static files from the web directory."""
+    return send_from_directory('../web', filename)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))

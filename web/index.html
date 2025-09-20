@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoonotic Potential Predictor - AI-Powered Genomic Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-dna"></i>
+                    <h1>Zoonotic Predictor</h1>
+                </div>
+                <p class="subtitle">AI-Powered Genomic Analysis for Pandemic Prevention</p>
+            </div>
+            <div class="header-bg"></div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Introduction Section -->
+            <section class="intro-section">
+                <div class="intro-content">
+                    <h2><i class="fas fa-microscope"></i> Advanced Genomic Analysis</h2>
+                    <p>Our machine learning model analyzes avian influenza viral genomes to predict zoonotic potential - the likelihood that a virus could jump from animals to humans. This technology helps researchers and public health officials assess pandemic risks.</p>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-brain"></i>
+                            <h3>ML-Powered</h3>
+                            <p>Advanced machine learning algorithms trained on genomic data</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-shield-virus"></i>
+                            <h3>Pandemic Prevention</h3>
+                            <p>Early detection of potential zoonotic threats</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Confidence Scores</h3>
+                            <p>Detailed probability assessments with confidence metrics</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prediction Interface -->
+            <section class="prediction-section">
+                <div class="prediction-container">
+                    <div class="prediction-header">
+                        <h2><i class="fas fa-search"></i> Genomic Analysis Interface</h2>
+                        <p>Input genomic features or upload sequence data for zoonotic potential analysis</p>
+                    </div>
+
+                    <div class="input-methods">
+                        <div class="method-tabs">
+                            <button class="tab-btn active" data-tab="manual">Manual Input</button>
+                            <button class="tab-btn" data-tab="sequence">Sequence Analysis</button>
+                            <button class="tab-btn" data-tab="sample">Sample Data</button>
+                        </div>
+
+                        <!-- Manual Input Tab -->
+                        <div class="tab-content active" id="manual-tab">
+                            <div class="input-section">
+                                <label for="features-input">Genomic Features (64 comma-separated values)</label>
+                                <textarea id="features-input" placeholder="Enter 64 genomic feature values separated by commas...&#10;Example: 0.1, 0.2, 0.3, 0.4, ..." rows="4"></textarea>
+                                <div class="input-help">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Expected: 64 nucleotide frequency values (AAA, AAC, AAG, AAT, etc.)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sequence Analysis Tab -->
+                        <div class="tab-content" id="sequence-tab">
+                            <div class="input-section">
+                                <label for="sequence-input">DNA/RNA Sequence</label>
+                                <textarea id="sequence-input" placeholder="Enter your viral genome sequence (FASTA format supported)...&#10;>Sequence_Name&#10;ATCGATCGATCGATCG..." rows="6"></textarea>
+                                <div class="input-help">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Paste viral genome sequence for automatic feature extraction</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sample Data Tab -->
+                        <div class="tab-content" id="sample-tab">
+                            <div class="sample-options">
+                                <button class="sample-btn" data-sample="high-risk">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>High Risk Sample</span>
+                                    <small>Known zoonotic strain features</small>
+                                </button>
+                                <button class="sample-btn" data-sample="low-risk">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Low Risk Sample</span>
+                                    <small>Typical non-zoonotic features</small>
+                                </button>
+                                <button class="sample-btn" data-sample="random">
+                                    <i class="fas fa-random"></i>
+                                    <span>Random Sample</span>
+                                    <small>Generate random test data</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Controls -->
+                    <div class="controls">
+                        <button id="analyze-btn" class="analyze-btn">
+                            <i class="fas fa-play"></i>
+                            Analyze Zoonotic Potential
+                        </button>
+                        <button id="clear-btn" class="clear-btn">
+                            <i class="fas fa-eraser"></i>
+                            Clear
+                        </button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loading" class="loading hidden">
+                        <div class="spinner"></div>
+                        <p>Analyzing genomic data...</p>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="results" class="results hidden">
+                        <div class="result-header">
+                            <h3><i class="fas fa-chart-bar"></i> Analysis Results</h3>
+                        </div>
+
+                        <div class="result-content">
+                            <div class="prediction-result">
+                                <div id="prediction-badge" class="prediction-badge">
+                                    <i id="prediction-icon"></i>
+                                    <span id="prediction-text"></span>
+                                </div>
+                            </div>
+
+                            <div class="confidence-section">
+                                <h4>Confidence Analysis</h4>
+                                <div class="confidence-bars">
+                                    <div class="confidence-item">
+                                        <label>Non-Zoonotic</label>
+                                        <div class="progress-bar">
+                                            <div id="non-zoonotic-bar" class="progress-fill non-zoonotic"></div>
+                                        </div>
+                                        <span id="non-zoonotic-percent"></span>
+                                    </div>
+                                    <div class="confidence-item">
+                                        <label>Zoonotic</label>
+                                        <div class="progress-bar">
+                                            <div id="zoonotic-bar" class="progress-fill zoonotic"></div>
+                                        </div>
+                                        <span id="zoonotic-percent"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="interpretation">
+                                <h4>Interpretation</h4>
+                                <p id="interpretation-text"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Display -->
+                    <div id="error" class="error hidden">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="error-message"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Info -->
+            <section class="tech-section">
+                <div class="tech-content">
+                    <h2><i class="fas fa-cogs"></i> Technical Details</h2>
+                    <div class="tech-grid">
+                        <div class="tech-card">
+                            <h3>Model Architecture</h3>
+                            <p>Machine learning model trained on avian influenza genomic sequences with 64-dimensional feature vectors representing nucleotide patterns.</p>
+                        </div>
+                        <div class="tech-card">
+                            <h3>Input Features</h3>
+                            <p>64 genomic features including all possible triplet nucleotide combinations (codons) normalized by sequence length.</p>
+                        </div>
+                        <div class="tech-card">
+                            <h3>API Integration</h3>
+                            <p>Real-time predictions powered by containerized ML models deployed on Google Cloud Kubernetes Engine.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Zoonotic Predictor</h3>
+                    <p>AI-powered genomic analysis for pandemic prevention research.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Technology</h3>
+                    <ul>
+                        <li>Machine Learning</li>
+                        <li>Genomic Analysis</li>
+                        <li>Cloud Computing</li>
+                        <li>Kubernetes</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>API Status</h3>
+                    <div class="api-status" id="api-status">
+                        <i class="fas fa-circle status-indicator"></i>
+                        <span>Checking...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Zoonotic Predictor. Advanced genomic analysis for research purposes.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
