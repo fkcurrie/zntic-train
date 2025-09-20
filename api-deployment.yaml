@@ -16,6 +16,7 @@ spec:
       containers:
       - name: zoonotic-api
         image: gcr.io/gca-gke-2025/zoonotic-api:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
