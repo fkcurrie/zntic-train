@@ -54,8 +54,9 @@ def predict():
         if len(features) != len(feature_columns):
             return jsonify({'error': f'Invalid number of features. Expected {len(feature_columns)}, got {len(features)}.'}), 400
 
-        # Create a DataFrame with the correct column names
+        # Create a DataFrame with the correct column names and order
         df = pd.DataFrame([features], columns=feature_columns)
+        df = df[feature_columns] # Ensure column order
 
         # Make a prediction
         prediction = model.predict(df.drop('zoonotic', axis=1))
