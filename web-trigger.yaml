@@ -1,0 +1,15 @@
+name: web-auto-trigger
+description: Auto-trigger for web interface changes
+github:
+  owner: fkcurrie
+  name: zntic-train
+  push:
+    branch: ^main$
+filename: cloudbuild-web.yaml
+includedFiles:
+  - web/index.html
+  - web/script.js
+  - web/styles.css
+  - nginx.conf
+  - web.Dockerfile
+serviceAccount: projects/-/serviceAccounts/764460891170-compute@developer.gserviceaccount.com

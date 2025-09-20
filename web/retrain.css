@@ -1,0 +1,112 @@
+/* Basic styles for the retraining page */
+
+.retrain-section {
+    padding: 40px 0;
+}
+
+.retrain-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    padding: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.retrain-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.retrain-header h2 {
+    font-size: 2rem;
+    color: #343a40;
+}
+
+.retrain-header p {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.form-card {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.form-card h3 {
+    font-size: 1.4rem;
+    color: #495057;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ced4da;
+    padding-bottom: 10px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.input-group small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.status {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #e7f5ec;
+    border: 1px solid #b8dfc8;
+    color: #1d643b;
+    text-align: center;
+}
+
+.status-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-content i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}

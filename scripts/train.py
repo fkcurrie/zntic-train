@@ -5,11 +5,13 @@ import io
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 import numpy as np
 import json
+import argparse
 
-def main():
+def main(args):
     """
     Main function to train the model.
     """
@@ -39,15 +41,23 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # --- Save Feature Columns ---
-    print("Saving feature columns to GCS...")
+    print(f"Saving feature columns to GCS for model '{args.model_name}'...")
     feature_columns = X_train.columns.tolist()
-    columns_blob = bucket.blob("feature_columns.json")
+    columns_path = f"models/{args.model_name}/feature_columns.json"
+    columns_blob = bucket.blob(columns_path)
     columns_blob.upload_from_string(json.dumps(feature_columns))
-    # --- End Save Feature Columns ---
+    
+    # --- Model Training ---
+    print(f"Training {args.model_type} model...")
+    hyperparams = json.loads(args.hyperparams)
+    
+    if args.model_type == 'LogisticRegression':
+        model = LogisticRegression(**hyperparams)
+    elif args.model_type == 'RandomForestClassifier':
+        model = RandomForestClassifier(**hyperparams)
+    else:
+        raise ValueError(f"Unsupported model type: {args.model_type}")
 
-    # Train a simple Logistic Regression model
-    print("Training Logistic Regression model...")
-    model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
 
     # Evaluate the model
@@ -56,17 +66,40 @@ def main():
     acc = accuracy_score(y_test, y_pred)
     print(f"Model Accuracy: {acc:.2f}")
 
-    # Save the trained model to a file
-    print("Saving model to file...")
+    # Save the trained model to a local file
+    print("Saving model to local file...")
     model_filename = 'model.joblib'
     joblib.dump(model, model_filename)
 
     # Upload the model to GCS
-    print("Uploading model to GCS...")
-    model_blob = bucket.blob(model_filename)
+    print(f"Uploading model to GCS at 'models/{args.model_name}/'...")
+    model_path = f"models/{args.model_name}/model.joblib"
+    model_blob = bucket.blob(model_path)
     model_blob.upload_from_filename(model_filename)
 
-    print("Training complete. Model and feature columns uploaded to GCS.")
+    print(f"Training complete. Model '{args.model_name}' and feature columns uploaded to GCS.")
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Train a zoonotic potential prediction model.")
+    parser.add_argument(
+        '--model-type', 
+        type=str, 
+        required=True, 
+        choices=['LogisticRegression', 'RandomForestClassifier'],
+        help='The type of model to train.'
+    )
+    parser.add_argument(
+        '--model-name', 
+        type=str, 
+        required=True, 
+        help='The name to save the model under in GCS.'
+    )
+    parser.add_argument(
+        '--hyperparams', 
+        type=str, 
+        default='{}', 
+        help='A JSON string of hyperparameters for the model.'
+    )
+    
+    parsed_args = parser.parse_args()
+    main(parsed_args)

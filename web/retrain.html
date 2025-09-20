@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrain Model - Zoonotic Risk Assessment</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="retrain.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <h1>Model Retraining Dashboard</h1>
+                </div>
+                <p class="subtitle">Computational Genomics Research Platform</p>
+            </div>
+            <div class="header-bg"></div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section class="retrain-section">
+                <div class="retrain-container">
+                    <div class="retrain-header">
+                        <h2><i class="fas fa-cogs"></i> Configure New Training Job</h2>
+                        <p>Select a model type and configure its hyperparameters to launch a new training job on the cluster.</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <!-- Model Configuration -->
+                        <div class="form-card">
+                            <h3><i class="fas fa-brain"></i> Model Configuration</h3>
+                            <div class="input-group">
+                                <label for="model-name">New Model Name</label>
+                                <input type="text" id="model-name" placeholder="e.g., random-forest-exp-1">
+                                <small>A unique name for your trained model. Use letters, numbers, and dashes.</small>
+                            </div>
+                            <div class="input-group">
+                                <label for="model-type">Model Type</label>
+                                <select id="model-type">
+                                    <option value="RandomForestClassifier">Random Forest Classifier</option>
+                                    <option value="LogisticRegression">Logistic Regression</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Hyperparameters -->
+                        <div class="form-card">
+                            <h3><i class="fas fa-sliders-h"></i> Hyperparameters</h3>
+                            <div class="input-group">
+                                <label for="hyperparams">Parameters (JSON format)</label>
+                                <textarea id="hyperparams" rows="6" placeholder='{
+    "n_estimators": 100,
+    "max_depth": 10,
+    "random_state": 42
+}'></textarea>
+                                <small>Enter parameters as a valid JSON object.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="controls">
+                        <button id="start-training-btn" class="analyze-btn">
+                            <i class="fas fa-play-circle"></i>
+                            Start Training Job
+                        </button>
+                        <a href="index.html" class="clear-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Predictor
+                        </a>
+                    </div>
+
+                    <!-- Status Display -->
+                    <div id="loading" class="loading hidden">
+                        <div class="spinner"></div>
+                        <p>Submitting training job to the cluster...</p>
+                    </div>
+                    <div id="status" class="status hidden">
+                        <div class="status-content">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="status-message"></span>
+                        </div>
+                    </div>
+                    <div id="error" class="error hidden">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="error-message"></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-bottom">
+                <p>&copy; 2025 Computational Genomics Research Platform</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="retrain.js"></script>
+</body>
+</html>

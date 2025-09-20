@@ -10,10 +10,11 @@ COPY requirements.txt /app/
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the API script into the container
+# Copy the application scripts into the container
 COPY scripts/api.py /app/
+COPY training-job.yaml /app/
 
-# Copy the web files into the container
+# Copy the web files (though not served by this container, they might be needed for context)
 COPY web/ /app/web/
 
 # Expose the port the app runs on

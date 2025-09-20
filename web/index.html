@@ -19,43 +19,29 @@
                 </div>
                 <p class="subtitle">Computational Genomics Research Platform</p>
             </div>
+             <nav class="header-nav">
+                <!-- Predictor link removed -->
+            </nav>
             <div class="header-bg"></div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Introduction Section -->
-            <section class="intro-section">
-                <div class="intro-content">
-                    <h2><i class="fas fa-flask"></i> Research Objective</h2>
-                    <p>This computational tool implements machine learning classification to evaluate the zoonotic potential of avian influenza viral genomes. The model provides probabilistic risk assessments based on nucleotide sequence patterns associated with human transmissibility.</p>
-
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <i class="fas fa-chart-bar"></i>
-                            <h3>Statistical Model</h3>
-                            <p>Random Forest classifier trained on genomic sequence features</p>
-                        </div>
-                        <div class="feature-card">
-                            <i class="fas fa-database"></i>
-                            <h3>GISAID Dataset</h3>
-                            <p>15,000+ sequences from global surveillance networks</p>
-                        </div>
-                        <div class="feature-card">
-                            <i class="fas fa-microscope"></i>
-                            <h3>Sequence Analysis</h3>
-                            <p>64-dimensional nucleotide triplet frequency vectors</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <!-- Prediction Interface -->
             <section class="prediction-section">
                 <div class="prediction-container">
                     <div class="prediction-header">
                         <h2><i class="fas fa-calculator"></i> Prediction Interface</h2>
                         <p>Input genomic feature vectors for computational risk assessment</p>
+                    </div>
+
+                    <div class="model-selection-bar">
+                        <label for="model-selector"><i class="fas fa-brain"></i> Select Model:</label>
+                        <select id="model-selector">
+                            <option>Loading models...</option>
+                        </select>
+                        <button id="refresh-models-btn" title="Refresh Model List"><i class="fas fa-sync-alt"></i></button>
+                        <button onclick="window.location.href='retrain.html'" class="nav-button">Retrain Models</button>
                     </div>
 
                     <div class="input-methods">
@@ -69,7 +55,8 @@
                         <div class="tab-content active" id="manual-tab">
                             <div class="input-section">
                                 <label for="features-input">Genomic Features (64 comma-separated values)</label>
-                                <textarea id="features-input" placeholder="Enter 64 genomic feature values separated by commas...&#10;Example: 0.1, 0.2, 0.3, 0.4, ..." rows="4"></textarea>
+                                <textarea id="features-input" placeholder="Enter 64 genomic feature values separated by commas...
+Example: 0.1, 0.2, 0.3, 0.4, ..." rows="4"></textarea>
                                 <div class="input-help">
                                     <i class="fas fa-info-circle"></i>
                                     <span>Expected: 64 nucleotide frequency values (AAA, AAC, AAG, AAT, etc.)</span>
@@ -81,7 +68,9 @@
                         <div class="tab-content" id="sequence-tab">
                             <div class="input-section">
                                 <label for="sequence-input">DNA/RNA Sequence</label>
-                                <textarea id="sequence-input" placeholder="Enter your viral genome sequence (FASTA format supported)...&#10;>Sequence_Name&#10;ATCGATCGATCGATCG..." rows="6"></textarea>
+                                <textarea id="sequence-input" placeholder="Enter your viral genome sequence (FASTA format supported)...
+>Sequence_Name
+ATCGATCGATCGATCG..." rows="6"></textarea>
                                 <div class="input-help">
                                     <i class="fas fa-info-circle"></i>
                                     <span>Paste viral genome sequence for automatic feature extraction</span>
@@ -230,35 +219,6 @@
                             </ul>
                         </div>
                     </div>
-
-                    <div class="disclaimer">
-                        <div class="disclaimer-content">
-                            <h4><i class="fas fa-exclamation-triangle"></i> Important Disclaimer</h4>
-                            <p><strong>For Research Purposes Only:</strong> This tool is designed for academic research and educational purposes. Results should not be used as the sole basis for public health decisions. Always consult with qualified epidemiologists and use established surveillance protocols for actual pandemic risk assessment.</p>
-                            <p><strong>Data Acknowledgment:</strong> We gratefully acknowledge the GISAID Initiative and all contributing laboratories for sharing genomic data that made this research possible.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Technical Info -->
-            <section class="tech-section">
-                <div class="tech-content">
-                    <h2><i class="fas fa-cogs"></i> Technical Implementation</h2>
-                    <div class="tech-grid">
-                        <div class="tech-card">
-                            <h3>Model Architecture</h3>
-                            <p>Machine learning model trained on avian influenza genomic sequences with 64-dimensional feature vectors representing nucleotide patterns.</p>
-                        </div>
-                        <div class="tech-card">
-                            <h3>Input Features</h3>
-                            <p>64 genomic features including all possible triplet nucleotide combinations (codons) normalized by sequence length.</p>
-                        </div>
-                        <div class="tech-card">
-                            <h3>API Integration</h3>
-                            <p>Real-time predictions powered by containerized ML models deployed on Google Cloud Kubernetes Engine.</p>
-                        </div>
-                    </div>
                 </div>
             </section>
         </main>
@@ -296,11 +256,7 @@
                             <span id="web-build-date" class="update-date">Loading...</span>
                         </div>
                         <div class="update-item">
-                            <span class="update-label">API Service:</span>
-                            <span id="api-build-date" class="update-date">Loading...</span>
-                        </div>
-                        <div class="update-item">
-                            <span class="update-label">Model Training:</span>
+                            <span class="update-label">API Service & Model:</span>
                             <span id="model-build-date" class="update-date">Loading...</span>
                         </div>
                     </div>

@@ -48,3 +48,12 @@ This document outlines the development plan for building the Zoonotic AI platfor
 
 - [ ] Connect the Cloud Build triggers to the `zntic-train` GitHub repository.
 - [ ] Configure the main branch trigger to automatically deploy new versions of the API to the GKE cluster.
+
+## Future Enhancements
+- On the model training page, add a feature to check for updates to the "GISAID Avian Influenza Sequences" raw data.
+    - If the source data is newer than the version in the GCS bucket, provide an option to trigger a data refresh.
+    - This process should:
+        1.  Download the latest data to the GCS bucket.
+        2.  Run any subsequent data pipeline steps (e.g., feature engineering).
+        3.  Provide real-time progress updates to the user.
+        4.  Notify the user upon completion.

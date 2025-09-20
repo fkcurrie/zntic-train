@@ -3,4 +3,6 @@ pandas
 scikit-learn
 google-cloud-storage
 Flask
+flask-cors
 gunicorn
+kubernetes

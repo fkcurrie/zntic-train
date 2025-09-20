@@ -922,3 +922,26 @@ textarea:focus {
         grid-template-columns: 1fr;
     }
 }
+.nav-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+.nav-button:hover {
+    background-color: #0056b3;
+}
+
+
+.model-selection-bar .nav-button {
+    margin-left: 15px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
