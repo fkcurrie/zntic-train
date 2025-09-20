@@ -1,49 +1,43 @@
-# Zoonotic AI
+# GISAID Assessment Tool
 
-This project aims to build a cloud-native platform for predicting the zoonotic potential of avian influenza viruses, based on the methods described in the paper "An AI for an AI: identifying zoonotic potential of avian influenza viruses via genomic machine learning."
+Welcome to the GISAID Assessment Tool, a cloud-native platform for predicting the zoonotic potential of avian influenza viruses. This tool provides a user-friendly interface to run predictions, manage a library of machine learning models, and even train new models on demand.
 
-## Project Configuration & Context
+## Features
 
-This section provides essential configuration details for any developer or AI assistant joining the project.
+This platform is a complete MLOps solution that allows you to:
 
-*   **GCP Project ID:** `gca-gke-2025`
-*   **GKE Cluster:** `zntic-train`
-*   **GCS Buckets:**
-    *   `zntic-data` (for primary data)
-    *   `zntic-test-bucket` (for isolated testing)
-*   **CI/CD:** Builds are automatically triggered by pushes to the `main` branch on GitHub via the `zntic-trigger` Cloud Build trigger.
-*   **Service Accounts:**
-    *   **Google Service Account (GSA):** `zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com`
-    *   **Kubernetes Service Account (KSA):** `zntic-gke-sa` (in the `default` namespace)
+*   **Predict Zoonotic Risk:** Input genomic feature vectors and get a probabilistic risk assessment from a variety of machine learning models.
+*   **Select Your Model:** Choose from a library of pre-trained models, including Logistic Regression, Random Forest, SVC, Gradient Boosting, and Neural Networks.
+*   **Train New Models:** Use the Retraining Dashboard to configure and launch new training jobs on the Kubernetes cluster. Experiment with different model types and hyperparameters.
+*   **GPU-Accelerated Training:** Neural Network models are automatically trained on a dedicated GPU-enabled node pool for maximum efficiency.
+*   **Automated CI/CD:** Changes to the source code automatically trigger builds and deployments for the relevant components.
 
-## Current Status
+## How to Use the Tool
 
-**✅ GKE Environment Healthy and Configured**
+The primary way to interact with this platform is through the web interface.
 
-The GKE cluster and associated resources have been rebuilt and are now in a healthy, correctly configured state. The previous GCS permission and autoscaling issues have been resolved.
+1.  **Prediction Interface:**
+    *   Select a pre-trained model from the dropdown menu.
+    *   Input your 64-dimensional genomic feature vector.
+    *   Click "Run Analysis" to see the prediction and confidence score.
 
-*   **RESOLVED: GCS Permission Issue:**
-    *   **Symptom:** Kubernetes jobs were failing with `403 Forbidden` errors when trying to access GCS.
-    *   **Root Cause:** The Google Service Account (GSA) `zntic-gke-sa@...` had the necessary `iam.workloadIdentityUser` role to be impersonated by pods, but the GSA itself **lacked the `roles/storage.admin` permission**. It was authorized to be used, but had no power to access GCS buckets.
-    *   **Solution:** The `storage.admin` role was added to the GSA. This fix was embedded directly into the Terraform configuration (`terraform/service-account.tf`) to ensure the permissions are set correctly on infrastructure creation. The `gcs-test-job` now runs successfully.
-
-*   **RESOLVED: Autoscaling Issue:**
-    *   **Symptom:** A "Can't scale up nodes" notification was observed in the GCP Console.
-    *   **Root Cause:** The `default-pool` node pool was not configured for autoscaling in the Terraform definition (`terraform/main.tf`).
-    *   **Solution:** An `autoscaling` block was added to the `default_pool` resource in the Terraform configuration, and the changes were applied to the cluster. The cluster now correctly scales based on workload.
+2.  **Retraining Dashboard:**
+    *   Navigate to the "Retrain Models" page.
+    *   Give your new model a unique name.
+    *   Select a model type (e.g., `RandomForestClassifier`, `NeuralNetwork`).
+    *   Adjust the default hyperparameters in the JSON editor as needed.
+    *   Click "Start Training Job" to launch the training process on the GKE cluster. The new model will appear in the prediction dropdown once training is complete.
 
 ## Cloud Architecture
 
-This project leverages a modern MLOps stack on Google Cloud:
+This project leverages a modern MLOps stack on Google Cloud for scalability and automation:
 
-*   **Infrastructure:** [**Terraform**](https://www.terraform.io/) is used to define and manage all cloud resources.
-*   **Containerization:** [**Docker**](https://www.docker.com/) is used to package all code.
-*   **CI/CD:** [**Google Cloud Build**](https://cloud.google.com/build) automatically builds and pushes container images.
-*   **Compute:** [**Google Kubernetes Engine (GKE)**](https://cloud.google.com/kubernetes-engine) orchestrates all containerized workloads, using Workload Identity for secure access to other GCP services.
-*   **Data Storage:** [**Google Cloud Storage (GCS)**](https://cloud.google.com/storage) is used for all data and model artifacts.
+*   **Infrastructure as Code:** [**Terraform**](https://www.terraform.io/) defines and manages all cloud resources, including the GKE cluster and GCS buckets.
+*   **Containerization:** [**Docker**](https://www.docker.com/) packages the API, training, and web components into reproducible container images.
+*   **CI/CD:** [**Google Cloud Build**](https://cloud.google.com/build) uses a "smart trigger" system. Pushes to the repository only build the specific components that have changed.
+*   **Compute:** [**Google Kubernetes Engine (GKE)**](https://cloud.google.com/kubernetes-engine) orchestrates all containerized workloads, with separate node pools for standard and GPU-intensive (NVIDIA T4) tasks.
+*   **Secure Access:** GKE Workload Identity provides pods with secure, keyless access to other GCP services.
+*   **Data & Model Storage:** [**Google Cloud Storage (GCS)**](https://cloud.google.com/storage) serves as the central repository for all data, model artifacts, and build logs.
 
-## Getting Started
-
-1.  **Clone the repository:** `git clone https://github.com/fkcurrie/zntic-train.git`
-2.  **Set up authentication:** Ensure you have the `gcloud` CLI installed and authenticated.
-3.  **Deploy the infrastructure:** `cd terraform && terraform init && terraform apply`
+---
+*This README was last updated by your AI assistant.*
