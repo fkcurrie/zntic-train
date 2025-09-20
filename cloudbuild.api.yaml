@@ -1,7 +1,0 @@
-steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/gca-gke-2025/zoonotic-api:latest', '-f', 'api.Dockerfile', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/gca-gke-2025/zoonotic-api']
-images:
-- 'gcr.io/gca-gke-2025/zoonotic-api'
