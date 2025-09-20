@@ -1,21 +1,22 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/gca-gke-2025/download-data', '-f', 'scripts/Dockerfile.download', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/gca-gke-2025/download-data']
+  id: 'Build Download Image'
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/gca-gke-2025/training', '-f', 'training.Dockerfile', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/gca-gke-2025/training']
+  id: 'Build Training Image'
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/gca-gke-2025/zoonotic-api', '-f', 'api.Dockerfile', '.']
+  id: 'Build API Image'
+- name: 'ubuntu'
+  args: ['bash', '-c', "echo '{\"build_date\": \"$(date -u +'%Y-%m-%d %H:%M:%S UTC')\"}' > web/build-info.json"]
+  id: 'Set Web Build Date'
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/gca-gke-2025/zoonotic-api']
-# Removed GCS test build steps as no longer needed
+  args: ['build', '-t', 'gcr.io/gca-gke-2025/zoonotic-web:latest', '-f', 'web.Dockerfile', '.']
+  id: 'Build Web Image'
+
 images:
 - 'gcr.io/gca-gke-2025/download-data'
 - 'gcr.io/gca-gke-2025/training'
 - 'gcr.io/gca-gke-2025/zoonotic-api'
-logsBucket: 'gs://zntic-data/logs'
-options:
-  logging: GCS_ONLY
+- 'gcr.io/gca-gke-2025/zoonotic-web'
