@@ -12,24 +12,35 @@ app = Flask(__name__)
 model = None
 storage_client = None
 bucket = None
+feature_columns = None
 
-def download_model():
-    """Downloads the model from GCS."""
-    global model
-    print("Downloading model from GCS...")
-    blob = bucket.blob("model.joblib")
-    model_data = blob.download_as_string()
+def download_model_and_features():
+    """Downloads the model and feature columns from GCS."""
+    global model, feature_columns
+    print("Downloading model and features from GCS...")
+
+    # Download model
+    model_blob = bucket.blob("model.joblib")
+    model_data = model_blob.download_as_string()
     model = joblib.load(io.BytesIO(model_data))
     print("Model downloaded and loaded successfully.")
 
+    # Download feature columns
+    features_blob = bucket.blob("features.csv")
+    features_data = features_blob.download_as_string()
+    features_df = pd.read_csv(io.StringIO(features_data.decode("utf-8")), nrows=0) # Read only headers
+    feature_columns = features_df.columns.drop('zoonotic').tolist() # Drop the label column
+    print(f"Feature columns loaded. Expecting {len(feature_columns)} features.")
+
+
 @app.before_request
-def load_model():
-    """Load the model before the first request."""
+def load_model_and_features():
+    """Load the model and feature columns before the first request."""
     global storage_client, bucket
     if model is None:
         storage_client = storage.Client()
         bucket = storage_client.get_bucket("zntic-data")
-        download_model()
+        download_model_and_features()
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -38,24 +49,13 @@ def predict():
         return jsonify({'error': 'Invalid input: JSON with "features" key is required.'}), 400
 
     try:
-        # Create a DataFrame from the input features
-        # The model expects a DataFrame with specific column names.
-        # For this placeholder, we assume the input is a list of feature values
-        # and we'll create a DataFrame with dummy column names.
         features = request.json['features']
         
-        # Get the expected number of features from the model
-        if hasattr(model, 'n_features_in_'):
-            num_features = model.n_features_in_
-        else:
-            # Fallback for older scikit-learn versions or different models
-            return jsonify({'error': 'Could not determine the number of features expected by the model.'}), 500
+        if len(features) != len(feature_columns):
+            return jsonify({'error': f'Invalid number of features. Expected {len(feature_columns)}, got {len(features)}.'}), 400
 
-        if len(features) != num_features:
-            return jsonify({'error': f'Invalid number of features. Expected {num_features}, got {len(features)}.'}), 400
-
-        # Create a DataFrame with the correct number of columns
-        df = pd.DataFrame([features], columns=[f'feature_{i}' for i in range(num_features)])
+        # Create a DataFrame with the correct column names
+        df = pd.DataFrame([features], columns=feature_columns)
 
         # Make a prediction
         prediction = model.predict(df)
