@@ -1,0 +1,16 @@
+createTime: '2025-09-20T22:00:17.020779581Z'
+description: Auto-triggers for web interface changes
+filename: cloudbuild-web.yaml
+github:
+  name: zntic-train
+  owner: fkcurrie
+  push:
+    branch: ^main$
+id: b17d8828-414f-4c61-921a-2ade83b77d11
+includedFiles:
+- web/**
+- nginx.conf
+- cloudbuild-web.yaml
+name: web-auto-trigger
+resourceName: projects/gca-gke-2025/locations/us-central1/triggers/b17d8828-414f-4c61-921a-2ade83b77d11
+serviceAccount: projects/gca-gke-2025/serviceAccounts/764460891170-compute@developer.gserviceaccount.com
