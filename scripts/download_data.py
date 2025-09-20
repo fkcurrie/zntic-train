@@ -2,17 +2,13 @@ import os
 from Bio import Entrez
 from Bio import SeqIO
 from google.cloud import storage
-from google.oauth2 import service_account
 
 def download_and_upload_to_gcs():
     """
     Downloads avian influenza data from NCBI and uploads it to a GCS bucket.
     """
-    # Set up GCS client with service account
-    credentials = service_account.Credentials.from_service_account_file(
-        "/app/secrets/gcr-key.json"
-    )
-    storage_client = storage.Client(credentials=credentials)
+    # Set up GCS client
+    storage_client = storage.Client()
     bucket = storage_client.get_bucket("zntic-data")
 
     # Set your email for NCBI Entrez
