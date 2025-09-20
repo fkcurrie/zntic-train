@@ -9,6 +9,7 @@ import json
 app = Flask(__name__)
 
 # --- Global variables ---
+# Test change to verify smart triggers work correctly
 model = None
 storage_client = None
 bucket = None
