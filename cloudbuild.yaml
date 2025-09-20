@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/gca-gke-2025/download-data', '-f', 'scripts/Dockerfile.download', 'scripts']
+  args: ['build', '-t', 'gcr.io/gca-gke-2025/download-data', '-f', 'scripts/Dockerfile.download', '.']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/gca-gke-2025/download-data']
 - name: 'gcr.io/cloud-builders/docker'
