@@ -4,21 +4,21 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/gca-gke-2025/download-data']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/gca-gke-2025/data-processing', '-f', 'Dockerfile', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/gca-gke-2025/data-processing']
-- name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/gca-gke-2025/training', '-f', 'training.Dockerfile', '.']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/gca-gke-2025/training']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/gca-gke-2025/zoonotic-api', '-f', 'api.Dockerfile', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/gca-gke-2025/zoonotic-api']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/gca-gke-2025/gcs-test', '-f', 'Dockerfile.gcs-test', '.']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/gca-gke-2025/gcs-test']
 images:
 - 'gcr.io/gca-gke-2025/download-data'
-- 'gcr.io/gca-gke-2025/data-processing'
 - 'gcr.io/gca-gke-2025/training'
+- 'gcr.io/gca-gke-2025/zoonotic-api'
 - 'gcr.io/gca-gke-2025/gcs-test'
 logsBucket: 'gs://zntic-data/logs'
 options:

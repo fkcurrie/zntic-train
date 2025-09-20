@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zoonotic-api-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zoonotic-api
+  template:
+    metadata:
+      labels:
+        app: zoonotic-api
+    spec:
+      serviceAccountName: zntic-gke-sa
+      containers:
+      - name: zoonotic-api
+        image: gcr.io/gca-gke-2025/zoonotic-api:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10

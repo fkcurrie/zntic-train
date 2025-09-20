@@ -2,3 +2,5 @@ biopython
 pandas
 scikit-learn
 google-cloud-storage
+Flask
+gunicorn
