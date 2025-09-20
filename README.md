@@ -8,6 +8,8 @@ The platform is built on Google Cloud Platform (GCP) and is designed to be scala
 
 **Infrastructure:** The core infrastructure, consisting of a GKE cluster and a GCS bucket, has been successfully provisioned using Terraform.
 
+**CI/CD:** A Cloud Build trigger is in place to automatically build and push container images to GCR when changes are pushed to the `main` branch.
+
 **Data Ingestion:** A containerized data download script has been developed. The process of running this as a Kubernetes job on the GKE cluster to populate the GCS bucket is currently in progress.
 
 ## Cloud Architecture
@@ -31,8 +33,8 @@ This project leverages a modern MLOps stack on Google Cloud:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/zoonotic-ai.git
-    cd zoonotic-ai
+    git clone https://github.com/fkcurrie/zntic-train.git
+    cd zntic-train
     ```
 
 2.  **Set up authentication:**

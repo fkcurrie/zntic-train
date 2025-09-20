@@ -5,9 +5,12 @@ metadata:
 spec:
   template:
     spec:
+      serviceAccountName: zntic-gke-sa
       containers:
       - name: download-data
-        image: gcr.io/your-project-id/data-processing
+        image: gcr.io/gca-gke-2025/data-processing
         command: ["python", "download_data.py"]
       restartPolicy: Never
+      imagePullSecrets:
+      - name: gcr-secret
   backoffLimit: 4
