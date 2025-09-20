@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gcs-test-job
+spec:
+  template:
+    spec:
+      serviceAccountName: zntic-gke-sa
+      containers:
+      - name: gcs-test
+        image: gcr.io/gca-gke-2025/gcs-test
+        env:
+        - name: TEST_BUCKET_NAME
+          value: "zntic-test-bucket"
+      restartPolicy: Never
+  backoffLimit: 4

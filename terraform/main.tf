@@ -12,7 +12,7 @@ terraform {
 }
 
 provider "google" {
-  project = "gke-gca-2025"
+  project = "gca-gke-2025"
   region  = "us-central1"
 }
 
@@ -27,6 +27,17 @@ data "google_client_config" "default" {}
 resource "google_storage_bucket" "data" {
   name     = "zntic-data"
   location = "US"
+}
+
+resource "google_storage_bucket" "test_bucket" {
+  name     = "zntic-test-bucket"
+  location = "US"
+}
+
+resource "google_storage_bucket_iam_member" "test_bucket_iam" {
+  bucket = google_storage_bucket.test_bucket.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
 }
 
 resource "google_container_cluster" "primary" {
