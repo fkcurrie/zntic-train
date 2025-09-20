@@ -1,12 +1,15 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/your-project-id/data-processing', '-f', 'Dockerfile', '.']
+  args: ['build', '-t', 'gcr.io/gca-gke-2025/data-processing', '-f', 'Dockerfile', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/your-project-id/data-processing']
+  args: ['push', 'gcr.io/gca-gke-2025/data-processing']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/your-project-id/training', '-f', 'training.Dockerfile', '.']
+  args: ['build', '-t', 'gcr.io/gca-gke-2025/training', '-f', 'training.Dockerfile', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/your-project-id/training']
+  args: ['push', 'gcr.io/gca-gke-2025/training']
 images:
-- 'gcr.io/your-project-id/data-processing'
-- 'gcr.io/your-project-id/training'
+- 'gcr.io/gca-gke-2025/data-processing'
+- 'gcr.io/gca-gke-2025/training'
+options:
+  logging: GCS_ONLY
+  logsBucket: 'gs://zntic-data/logs'
