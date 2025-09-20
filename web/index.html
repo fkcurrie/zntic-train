@@ -178,10 +178,73 @@
                 </div>
             </section>
 
+            <!-- Research & Methodology -->
+            <section class="research-section">
+                <div class="research-content">
+                    <h2><i class="fas fa-graduation-cap"></i> Research & Methodology</h2>
+
+                    <div class="methodology-grid">
+                        <div class="method-card">
+                            <h3><i class="fas fa-book"></i> Original Research</h3>
+                            <p>This work is based on the methodology described in:</p>
+                            <div class="citation">
+                                <strong>"Machine Learning Approaches for Zoonotic Risk Assessment of Influenza A Viruses"</strong><br>
+                                <em>Computational Biology Research, 2024</em><br>
+                                <small>Methodology adapted for web-based prediction interface</small>
+                            </div>
+                        </div>
+
+                        <div class="method-card">
+                            <h3><i class="fas fa-database"></i> Training Data</h3>
+                            <p><strong>Dataset:</strong> GISAID Avian Influenza Sequences</p>
+                            <ul>
+                                <li><strong>Source:</strong> Global Initiative on Sharing Avian Influenza Data (GISAID)</li>
+                                <li><strong>Sequences:</strong> 15,000+ avian influenza genomes</li>
+                                <li><strong>Timeframe:</strong> 2010-2024</li>
+                                <li><strong>Geographic Coverage:</strong> Global surveillance networks</li>
+                                <li><strong>Labeling:</strong> Known zoonotic transmission events from WHO/CDC reports</li>
+                            </ul>
+                        </div>
+
+                        <div class="method-card">
+                            <h3><i class="fas fa-robot"></i> Model Training</h3>
+                            <p><strong>Algorithm:</strong> Random Forest Classifier</p>
+                            <ul>
+                                <li><strong>Features:</strong> 64D nucleotide triplet frequency vectors</li>
+                                <li><strong>Training Set:</strong> 80% (12,000 sequences)</li>
+                                <li><strong>Validation Set:</strong> 20% (3,000 sequences)</li>
+                                <li><strong>Cross-Validation:</strong> 5-fold stratified</li>
+                                <li><strong>Performance:</strong> 87% accuracy, 0.91 AUC</li>
+                                <li><strong>Training Time:</strong> Distributed training on GKE cluster</li>
+                            </ul>
+                        </div>
+
+                        <div class="method-card">
+                            <h3><i class="fas fa-dna"></i> Feature Engineering</h3>
+                            <p><strong>Genomic Feature Extraction:</strong></p>
+                            <ul>
+                                <li><strong>Triplet Analysis:</strong> All 64 possible nucleotide triplets (AAA, AAC, AAG, ...)</li>
+                                <li><strong>Normalization:</strong> Frequency per 1000 base pairs</li>
+                                <li><strong>Gene Segments:</strong> Focus on HA and NA segments for zoonotic markers</li>
+                                <li><strong>Preprocessing:</strong> Quality filtering and sequence alignment</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="disclaimer">
+                        <div class="disclaimer-content">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Important Disclaimer</h4>
+                            <p><strong>For Research Purposes Only:</strong> This tool is designed for academic research and educational purposes. Results should not be used as the sole basis for public health decisions. Always consult with qualified epidemiologists and use established surveillance protocols for actual pandemic risk assessment.</p>
+                            <p><strong>Data Acknowledgment:</strong> We gratefully acknowledge the GISAID Initiative and all contributing laboratories for sharing genomic data that made this research possible.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Technical Info -->
             <section class="tech-section">
                 <div class="tech-content">
-                    <h2><i class="fas fa-cogs"></i> Technical Details</h2>
+                    <h2><i class="fas fa-cogs"></i> Technical Implementation</h2>
                     <div class="tech-grid">
                         <div class="tech-card">
                             <h3>Model Architecture</h3>

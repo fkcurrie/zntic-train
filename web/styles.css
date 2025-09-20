@@ -570,6 +570,130 @@ textarea:focus {
     color: var(--danger-color);
 }
 
+/* Research Section */
+.research-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #2a4365, #3182ce);
+}
+
+.research-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.research-content h2 {
+    text-align: center;
+    margin-bottom: 60px;
+    font-size: 2.5rem;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.methodology-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.method-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.method-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.method-card h3 {
+    color: #2d3748;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.method-card h3 i {
+    margin-right: 10px;
+    color: #3182ce;
+}
+
+.method-card p {
+    color: #4a5568;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.method-card ul {
+    color: #4a5568;
+    padding-left: 20px;
+    line-height: 1.8;
+}
+
+.method-card li {
+    margin-bottom: 8px;
+}
+
+.citation {
+    background: #f7fafc;
+    border-left: 4px solid #3182ce;
+    padding: 15px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 15px 0;
+}
+
+.citation strong {
+    color: #2d3748;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.citation em {
+    color: #718096;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.citation small {
+    color: #a0aec0;
+}
+
+.disclaimer {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.disclaimer-content h4 {
+    color: #fed7d7;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.disclaimer-content h4 i {
+    margin-right: 10px;
+    color: #fc8181;
+}
+
+.disclaimer-content p {
+    color: #e2e8f0;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.disclaimer-content p:last-child {
+    margin-bottom: 0;
+}
+
 /* Tech Section */
 .tech-section {
     background: var(--bg-primary);
