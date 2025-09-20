@@ -1,12 +1,23 @@
 import os
 from Bio import Entrez
 from Bio import SeqIO
-import subprocess
+from google.cloud import storage
 
 def download_and_upload_to_gcs():
     """
     Downloads avian influenza data from NCBI and uploads it to a GCS bucket.
     """
+    # Set up GCS client
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket("zntic-data")
+    blob_name = "avian_influenza.fasta"
+    blob = bucket.blob(blob_name)
+
+    # Check if the data already exists
+    if blob.exists():
+        print(f"'{blob_name}' already exists in GCS bucket 'zntic-data'. Skipping download.")
+        return
+
     # Set your email for NCBI Entrez
     Entrez.email = "user@example.com"
 
@@ -24,14 +35,9 @@ def download_and_upload_to_gcs():
     fasta_records = handle.read()
     handle.close()
 
-    # Save the records to a local file
-    local_file = "avian_influenza.fasta"
-    with open(local_file, "w") as f:
-        f.write(fasta_records)
-
     # Upload to GCS
-    print(f"Uploading {local_file} to GCS bucket 'zntic-data'...")
-    subprocess.run(["gcloud", "storage", "cp", local_file, "gs://zntic-data/"], check=True)
+    print(f"Uploading {len(fasta_records)} bytes to GCS bucket 'zntic-data'...")
+    blob.upload_from_string(fasta_records)
 
     print("Upload complete.")
 

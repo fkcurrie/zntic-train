@@ -38,6 +38,10 @@ resource "google_container_cluster" "primary" {
   # node pool and immediately delete it.
   remove_default_node_pool = true
   initial_node_count       = 1
+
+  workload_identity_config {
+    workload_pool = "gca-gke-2025.svc.id.goog"
+  }
 }
 
 resource "google_container_node_pool" "default_pool" {
@@ -48,6 +52,9 @@ resource "google_container_node_pool" "default_pool" {
 
   node_config {
     machine_type = "e2-medium"
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
   }
 }
 
@@ -64,6 +71,9 @@ resource "google_container_node_pool" "gpu_pool" {
 
   node_config {
     machine_type = "n1-standard-1"
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
 
     guest_accelerator {
       type  = "nvidia-tesla-t4"

@@ -3,6 +3,9 @@ resource "kubernetes_service_account" "zntic_gke_sa" {
   metadata {
     name      = "zntic-gke-sa"
     namespace = "default"
+    annotations = {
+      "iam.gke.io/gcp-service-account" = "zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
+    }
   }
 }
 
