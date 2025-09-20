@@ -9,3 +9,8 @@ venv/
 
 # Data files
 data/
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
