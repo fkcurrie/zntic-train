@@ -5,12 +5,15 @@ metadata:
 spec:
   template:
     spec:
+      serviceAccountName: zntic-gke-sa
       containers:
       - name: train-model
-        image: gcr.io/your-project-id/training
+        image: gcr.io/gca-gke-2025/training
         command: ["python", "train.py"]
         resources:
           limits:
             nvidia.com/gpu: 1
       restartPolicy: Never
+      imagePullSecrets:
+      - name: gcr-secret
   backoffLimit: 4

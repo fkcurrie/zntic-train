@@ -10,7 +10,9 @@ The platform is built on Google Cloud Platform (GCP) and is designed to be scala
 
 **CI/CD:** A Cloud Build trigger is in place to automatically build and push container images to GCR when changes are pushed to the `main` branch.
 
-**Data Ingestion:** A containerized data download script has been developed. The process of running this as a Kubernetes job on the GKE cluster to populate the GCS bucket is currently in progress.
+**Data Ingestion:** The data ingestion pipeline is complete. A Kubernetes job successfully downloads data from NCBI and uploads it to the GCS bucket.
+
+**Training Pipeline:** The training pipeline is under development. A Docker container and Kubernetes job have been created, but are currently being debugged.
 
 ## Cloud Architecture
 
@@ -45,4 +47,9 @@ This project leverages a modern MLOps stack on Google Cloud:
     ```bash
     terraform init
     terraform apply
+    ```
+
+4.  **Run the data ingestion job:**
+    ```bash
+    kubectl apply -f download-job.yaml
     ```

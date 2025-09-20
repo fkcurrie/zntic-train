@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-09-20
+
+### Fixed
+
+- Resolved all issues with the data ingestion pipeline. The `download-data` job now runs successfully on GKE.
+
+### Changed
+
+- Updated `download-job.yaml` to correctly mount service account credentials.
+- Updated `download_data.py` to explicitly use service account credentials.
+- Updated `requirements.txt` to include all necessary dependencies.
+- Updated `Dockerfile` to correctly install `ncbi-datasets-cli`.
+
 ## [0.3.0] - 2025-09-20
 
 ### Added
