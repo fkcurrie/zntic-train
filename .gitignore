@@ -22,3 +22,4 @@ gcr-key.json
 claude.md
 gemini.md
 \n# Ignore credentials and model artifacts\n*.json\n*.joblib
+\n# Ignore Claude-specific files\nCLOUD.md
