@@ -1,0 +1,60 @@
+# Exclude large files and directories from Cloud Build uploads
+.git/
+*.git
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Large data files
+*.csv
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+data/
+datasets/
+models/
+*.model
+*.weights
+*.tar.gz
+*.zip
+
+# Node modules and similar
+node_modules/
+
+# Google Cloud SDK and virtual environments
+google-cloud-sdk/
+venv/
+env/
+.env/
+
+# Terraform state and cache
+terraform/.terraform/
+terraform/terraform.tfstate*
+terraform/.terraform.lock.hcl
