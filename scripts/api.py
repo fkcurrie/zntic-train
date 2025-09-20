@@ -29,7 +29,7 @@ def download_model_and_features():
     features_blob = bucket.blob("features.csv")
     features_data = features_blob.download_as_string()
     features_df = pd.read_csv(io.StringIO(features_data.decode("utf-8")), nrows=0) # Read only headers
-    feature_columns = features_df.columns.drop('zoonotic').tolist() # Drop the label column
+    feature_columns = features_df.columns.tolist()
     print(f"Feature columns loaded. Expecting {len(feature_columns)} features.")
 
 
@@ -58,8 +58,8 @@ def predict():
         df = pd.DataFrame([features], columns=feature_columns)
 
         # Make a prediction
-        prediction = model.predict(df)
-        prediction_proba = model.predict_proba(df)
+        prediction = model.predict(df.drop('zoonotic', axis=1))
+        prediction_proba = model.predict_proba(df.drop('zoonotic', axis=1))
 
         # Return the result
         result = {
