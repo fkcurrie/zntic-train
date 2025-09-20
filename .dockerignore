@@ -1,0 +1,33 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Git
+.git/
+
+# Terraform
+terraform/
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+
+# GCP SDK
+google-cloud-sdk/
+
+# IDE / Editor
+.idea/
+.vscode/
+
+# Archives
+*.zip
+*.tar.gz
+
+# Local files
+gcp-credentials.json
+gcr-key.json
+test.txt

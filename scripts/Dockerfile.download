@@ -1,12 +1,21 @@
-# Use a standard Python base image
+# Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the script and install dependencies
-COPY download_data.py .
-RUN pip install biopython google-cloud-storage
+# Copy the requirements file into the container at /app
+COPY requirements.txt /app/
 
-# Run the script
-CMD ["python", "download_data.py"]
+# Install any needed packages specified in requirements.txt
+# We install the specific libraries needed for this script
+RUN pip install --no-cache-dir biopython google-cloud-storage
+
+# Copy the script into the container
+COPY download_data.py /app/
+
+# Make the script executable
+RUN chmod +x /app/download_data.py
+
+# Run the script when the container launches
+CMD ["python", "/app/download_data.py"]

@@ -61,6 +61,11 @@ resource "google_container_node_pool" "default_pool" {
   location   = "us-central1-a"
   node_count = 1
 
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 3
+  }
+
   node_config {
     machine_type = "e2-medium"
     workload_metadata_config {

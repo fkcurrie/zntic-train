@@ -15,3 +15,10 @@ resource "google_service_account_iam_member" "gke_workload_identity_user" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:gca-gke-2025.svc.id.goog[default/zntic-gke-sa]"
 }
+
+# Grants the Google Service Account the Storage Admin role for GCS access
+resource "google_project_iam_member" "gke_storage_admin" {
+  project = "gca-gke-2025"
+  role    = "roles/storage.admin"
+  member  = "serviceAccount:zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
+}

@@ -1,14 +1,16 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: download-data
+  name: download-data-job
 spec:
   template:
     spec:
       serviceAccountName: zntic-gke-sa
       containers:
       - name: download-data
-        image: gcr.io/gca-gke-2025/data-processing
-        command: ["python", "download_data.py"]
+        image: gcr.io/gca-gke-2025/download-data:latest
+        env:
+        - name: GOOGLE_CLOUD_PROJECT
+          value: "gca-gke-2025"
       restartPolicy: Never
   backoffLimit: 4
