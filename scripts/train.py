@@ -1,20 +1,22 @@
 import os
 import pandas as pd
+from google.cloud import storage
+import io
 
 def main():
     """
     Main function to train the model.
     """
-    # Path to the features file
-    features_file = os.path.join("data", "features.csv")
+    # Set up GCS client
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket("zntic-data")
 
-    # Check if the features file exists
-    if not os.path.exists(features_file):
-        print(f"Error: {features_file} not found. Please run feature_engineering.py first.")
-        exit()
+    # Download the features from GCS
+    blob = bucket.blob("features.csv")
+    features_data = blob.download_as_string()
 
-    # Load the features
-    df = pd.read_csv(features_file)
+    # Load the features into a pandas DataFrame
+    df = pd.read_csv(io.StringIO(features_data.decode("utf-8")))
 
     # Print the head of the DataFrame
     print(df.head())
