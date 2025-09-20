@@ -7,9 +7,9 @@ spec:
     spec:
       serviceAccountName: zntic-gke-sa
       containers:
-      - name: feature-engineering
+      - name: training
         image: gcr.io/gca-gke-2025/training:latest
-        command: ["python", "/app/feature_engineering.py"]
+        command: ["python", "/app/train.py"]
         resources:
           limits:
             nvidia.com/gpu: 1
