@@ -26,3 +26,21 @@ This project leverages a modern MLOps stack on Google Cloud:
 
 *   **Machine Learning:** Python, TensorFlow/Keras, Scikit-learn, Pandas, Biopython
 *   **Cloud & DevOps:** Google Cloud Platform (GKE, Cloud Build, GCS), Terraform, Docker, GitHub
+
+## Getting Started
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/zoonotic-ai.git
+    cd zoonotic-ai
+    ```
+
+2.  **Set up authentication:**
+    Ensure you have the `gcloud` CLI installed and authenticated with your GCP account.
+
+3.  **Deploy the infrastructure:**
+    Navigate to the `terraform` directory and run the following commands:
+    ```bash
+    terraform init
+    terraform apply
+    ```

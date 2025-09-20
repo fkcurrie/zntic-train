@@ -2,115 +2,72 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 5.0"
+      version = "5.45.2"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
+      version = "2.38.0"
     }
   }
 }
 
 provider "google" {
-  project = "gca-gke-2025"
+  project = "gke-gca-2025"
   region  = "us-central1"
 }
 
 provider "kubernetes" {
-  host                   = "https://${google_container_cluster.zntic_train.endpoint}"
+  host                   = "https://${google_container_cluster.primary.endpoint}"
   token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(google_container_cluster.zntic_train.master_auth[0].cluster_ca_certificate)
+  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate)
 }
 
 data "google_client_config" "default" {}
 
-# A GCS bucket to store the training data
-resource "google_storage_bucket" "training_data" {
-  name          = "zntic-train-data"
-  location      = "US-CENTRAL1"
-  force_destroy = true # Set to true for easier cleanup in a dev environment
-
-  uniform_bucket_level_access = true
+resource "google_storage_bucket" "data" {
+  name     = "zntic-data"
+  location = "US"
 }
 
-resource "google_storage_bucket_iam_member" "gke_storage_access" {
-  bucket = google_storage_bucket.training_data.name
-  role   = "roles/storage.admin"
-  member = "serviceAccount:zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
-}
-
-resource "google_project_iam_member" "gke_artifact_reader" {
-  project = "gca-gke-2025"
-  role    = "roles/artifactregistry.reader"
-  member  = "serviceAccount:zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
-}
-
-resource "google_container_cluster" "zntic_train" {
+resource "google_container_cluster" "primary" {
   name     = "zntic-train"
-  location = "us-central1"
+  location = "us-central1-a"
 
-  # We can't remove the default node pool, but we can make it small.
+  # We can't create a cluster with no node pool defined, but we want to only use
+  # separately managed node pools. So we create the smallest possible default
+  # node pool and immediately delete it.
   remove_default_node_pool = true
   initial_node_count       = 1
-
-  # Enable Workload Identity
-  workload_identity_config {
-    workload_pool = "gca-gke-2025.svc.id.goog"
-  }
 }
 
-# Default node pool for general workloads (non-GPU)
 resource "google_container_node_pool" "default_pool" {
-  name       = "default-cpu-pool"
-  cluster    = google_container_cluster.zntic_train.name
-  location   = google_container_cluster.zntic_train.location
+  name       = "default-pool"
+  cluster    = google_container_cluster.primary.name
+  location   = "us-central1-a"
   node_count = 1
 
   node_config {
-    machine_type    = "e2-medium"
-    disk_size_gb    = 100 # Increased disk size
-    service_account = "zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
+    machine_type = "e2-medium"
   }
 }
 
-# Autoscaling node pool with T4 GPUs for training jobs
-resource "google_container_node_pool" "gpu_training_pool" {
-  name     = "t4-gpu-training-pool"
-  cluster  = google_container_cluster.zntic_train.name
-  location = google_container_cluster.zntic_train.location
+resource "google_container_node_pool" "gpu_pool" {
+  name       = "gpu-pool"
+  cluster    = google_container_cluster.primary.name
+  location   = "us-central1-a"
+  node_count = 0
 
   autoscaling {
     min_node_count = 0
-    max_node_count = 3 # Can be adjusted based on workload
-  }
-  
-  management {
-    auto_repair  = true
-    auto_upgrade = true
+    max_node_count = 1
   }
 
   node_config {
-    machine_type    = "n1-standard-4" # A good general-purpose machine type for a T4
-    disk_size_gb    = 100
-    service_account = "zntic-gke-sa@gca-gke-2025.iam.gserviceaccount.com"
-    
+    machine_type = "n1-standard-1"
+
     guest_accelerator {
       type  = "nvidia-tesla-t4"
       count = 1
     }
-
-    # Taint nodes to only schedule pods that explicitly request GPUs
-    taint {
-      key    = "nvidia.com/gpu"
-      value  = "present"
-      effect = "NO_SCHEDULE"
-    }
-
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
   }
 }

@@ -1,0 +1,10 @@
+name: zntic-train-main
+description: "Trigger for main branch of zntic-train"
+github:
+  owner: fkcurrie
+  name: zntic-train
+  push:
+    branch: ^main$
+filename: cloudbuild.yaml
+substitutions:
+  _PROJECT_ID: gca-gke-2025

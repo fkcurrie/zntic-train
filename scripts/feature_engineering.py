@@ -1,72 +1,49 @@
 import os
-import itertools
 from Bio import SeqIO
 import pandas as pd
-from google.cloud import storage
+from collections import defaultdict
 
-# Configuration
-BUCKET_NAME = "zntic-train-data"
-SOURCE_BLOB_NAME = "raw_data/avian_influenza.fna"
-DESTINATION_BLOB_NAME = "features/kmer_features.csv"
-K = 4
+def get_kmer_composition(sequence, k):
+    """
+    Calculates the k-mer composition of a DNA sequence.
+    """
+    kmer_counts = defaultdict(int)
+    for i in range(len(sequence) - k + 1):
+        kmer = sequence[i:i+k]
+        kmer_counts[kmer] += 1
+    return kmer_counts
 
-def generate_kmer_features():
-    """Downloads genome data from GCS, calculates k-mer frequencies, and uploads the results."""
+def main():
+    """
+    Main function to perform feature engineering.
+    """
+    # Path to the downloaded data
+    data_file = os.path.join("data", "ncbi_dataset", "data", "genomic.fna")
 
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(BUCKET_NAME)
+    # Check if the data file exists
+    if not os.path.exists(data_file):
+        print(f"Error: {data_file} not found. Please run download_data.py first.")
+        exit()
 
-    # Download the data from GCS
-    print(f"Downloading gs://{BUCKET_NAME}/{SOURCE_BLOB_NAME}...")
-    blob = bucket.blob(SOURCE_BLOB_NAME)
-    fasta_string = blob.download_as_string().decode('utf-8')
-    
-    # Generate all possible k-mers
-    bases = ['A', 'C', 'G', 'T']
-    all_kmers = [''.join(p) for p in itertools.product(bases, repeat=K)]
-    kmer_dict = {kmer: 0 for kmer in all_kmers}
+    # Parse the FASTA file
+    records = list(SeqIO.parse(data_file, "fasta"))
 
-    features_list = []
-    
-    # Use a file-like object to parse the FASTA string
-    from io import StringIO
-    fasta_io = StringIO(fasta_string)
+    # Calculate k-mer composition for each record
+    k = 3
+    kmer_compositions = []
+    for record in records:
+        kmer_composition = get_kmer_composition(str(record.seq), k)
+        kmer_compositions.append(kmer_composition)
 
-    print("Calculating k-mer frequencies...")
-    for record in SeqIO.parse(fasta_io, "fasta"):
-        current_kmer_counts = kmer_dict.copy()
-        sequence = str(record.seq).upper()
-        
-        # Count k-mers
-        for i in range(len(sequence) - K + 1):
-            kmer = sequence[i:i+K]
-            if kmer in current_kmer_counts:
-                current_kmer_counts[kmer] += 1
-        
-        # Normalize to get frequencies
-        total_kmers = len(sequence) - K + 1
-        if total_kmers > 0:
-            for kmer in current_kmer_counts:
-                current_kmer_counts[kmer] /= total_kmers
-        
-        current_kmer_counts['sequence_id'] = record.id
-        features_list.append(current_kmer_counts)
+    # Create a pandas DataFrame from the k-mer compositions
+    df = pd.DataFrame(kmer_compositions)
+    df = df.fillna(0)
 
-    print(f"Processed {len(features_list)} sequences.")
+    # Save the DataFrame to a CSV file
+    output_file = os.path.join("data", "features.csv")
+    df.to_csv(output_file, index=False)
 
-    # Create a DataFrame and save to CSV in memory
-    df = pd.DataFrame(features_list)
-    cols = ['sequence_id'] + [col for col in df.columns if col != 'sequence_id']
-    df = df[cols]
-    
-    output_csv = df.to_csv(index=False)
-
-    # Upload the features to GCS
-    print(f"Uploading features to gs://{BUCKET_NAME}/{DESTINATION_BLOB_NAME}...")
-    feature_blob = bucket.blob(DESTINATION_BLOB_NAME)
-    feature_blob.upload_from_string(output_csv)
-    
-    print("Feature engineering complete.")
+    print(f"Saved features to {output_file}")
 
 if __name__ == "__main__":
-    generate_kmer_features()
+    main()

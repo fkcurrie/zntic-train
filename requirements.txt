@@ -1,0 +1,4 @@
+biopython
+ncbi-datasets-cli
+pandas
+scikit-learn

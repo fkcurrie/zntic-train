@@ -1,23 +1,12 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'build',
-    '-t',
-    'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/data-downloader:latest',
-    '-f',
-    'scripts/Dockerfile.download',
-    './scripts'
-  ]
+  args: ['build', '-t', 'gcr.io/your-project-id/data-processing', '-f', 'Dockerfile', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'build',
-    '-t',
-    'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/feature-engineering:latest',
-    '-f',
-    'scripts/Dockerfile.feature-engineering',
-    './scripts'
-  ]
-
+  args: ['push', 'gcr.io/your-project-id/data-processing']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/your-project-id/training', '-f', 'training.Dockerfile', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/your-project-id/training']
 images:
-- 'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/data-downloader:latest'
-- 'us-central1-docker.pkg.dev/gca-gke-2025/zntic-train-repo/feature-engineering:latest'
+- 'gcr.io/your-project-id/data-processing'
+- 'gcr.io/your-project-id/training'

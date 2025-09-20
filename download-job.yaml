@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: download-data
+spec:
+  template:
+    spec:
+      containers:
+      - name: download-data
+        image: gcr.io/your-project-id/data-processing
+        command: ["python", "download_data.py"]
+      restartPolicy: Never
+  backoffLimit: 4
