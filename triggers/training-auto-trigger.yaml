@@ -8,9 +8,7 @@ github:
     branch: ^main$
 id: 3091a847-aab4-42e6-8812-fad8fd28a232
 includedFiles:
-- scripts/train.py
-- scripts/feature_engineering.py
-- training.Dockerfile
+- training/**
 - requirements.txt
 name: training-auto-trigger
 resourceName: projects/gca-gke-2025/locations/us-central1/triggers/3091a847-aab4-42e6-8812-fad8fd28a232

@@ -8,10 +8,9 @@ github:
     branch: ^main$
 id: 180be053-5d5e-4cca-95aa-3b5988dd2323
 includedFiles:
-- scripts/api.py
-- api.Dockerfile
+- api/**
 - requirements.txt
-- training-job.yaml
+- kubernetes/training-job.yaml
 name: api-auto-trigger
 resourceName: projects/gca-gke-2025/locations/us-central1/triggers/180be053-5d5e-4cca-95aa-3b5988dd2323
 serviceAccount: projects/gca-gke-2025/serviceAccounts/764460891170-compute@developer.gserviceaccount.com

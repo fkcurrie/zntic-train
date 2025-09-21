@@ -10,10 +10,8 @@ COPY requirements.txt /app/
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the scripts into the container
-COPY scripts/feature_engineering.py /app/
-COPY scripts/train.py /app/
+# Copy the script into the container
+COPY download/download_data.py /app/
 
-# Make the scripts executable
-RUN chmod +x /app/feature_engineering.py
-RUN chmod +x /app/train.py
+# Run the script when the container launches
+CMD ["python", "/app/download_data.py"]

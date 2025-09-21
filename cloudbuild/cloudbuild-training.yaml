@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/gca-gke-2025/training', '-f', 'training.Dockerfile', '.']
+  args: ['build', '-t', 'gcr.io/gca-gke-2025/training', '-f', 'training/training.Dockerfile', '.']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/gca-gke-2025/training']
 images:

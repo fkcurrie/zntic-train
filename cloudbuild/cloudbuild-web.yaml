@@ -2,7 +2,7 @@ steps:
 - name: 'ubuntu'
   args: ['bash', '-c', "echo '{\"build_date\": \"$(date -u +'%Y-%m-%d %H:%M:%S UTC')\"}' > web/build-info.json"]
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/gca-gke-2025/zoonotic-web:latest', '-f', 'web.Dockerfile', '.']
+  args: ['build', '-t', 'gcr.io/gca-gke-2025/zoonotic-web:latest', '-f', 'web/web.Dockerfile', '.']
 images:
 - 'gcr.io/gca-gke-2025/zoonotic-web:latest'
 logsBucket: 'gs://zntic-data/logs'

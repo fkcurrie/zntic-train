@@ -10,8 +10,13 @@ COPY requirements.txt /app/
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the script into the container
-COPY scripts/download_data.py /app/
+# Copy the application scripts into the container
+COPY api/api.py /app/
+COPY kubernetes/training-job.yaml /app/
+COPY kubernetes/training-job-gpu.yaml /app/
 
-# Run the script when the container launches
-CMD ["python", "/app/download_data.py"]
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Run the application using gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "api:app"]
