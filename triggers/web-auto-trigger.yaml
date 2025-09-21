@@ -12,4 +12,3 @@ includedFiles:
 - cloudbuild/cloudbuild-web.yaml
 name: web-auto-trigger
 resourceName: projects/gca-gke-2025/locations/us-central1/triggers/b17d8828-414f-4c61-921a-2ade83b77d11
-serviceAccount: projects/gca-gke-2025/serviceAccounts/764460891170-compute@developer.gserviceaccount.com
