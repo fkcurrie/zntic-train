@@ -1,4 +1,3 @@
-createTime: '2025-09-20T22:00:09.076693061Z'
 description: Auto-build download service when download files change
 filename: cloudbuild/cloudbuild-download.yaml
 github:
@@ -6,9 +5,8 @@ github:
   owner: fkcurrie
   push:
     branch: ^main$
-id: 7c00580a-14c8-4688-9c35-3d1a05219d5b
 includedFiles:
 - download/**
 - requirements.txt
 name: download-auto-trigger
-resourceName: projects/gca-gke-2025/locations/us-central1/triggers/7c00580a-14c8-4688-9c35-3d1a05219d5b
+serviceAccount: projects/gca-gke-2025/serviceAccounts/764460891170-compute@developer.gserviceaccount.com

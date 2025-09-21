@@ -1,4 +1,3 @@
-createTime: '2025-09-20T22:00:01.929899203Z'
 description: Auto-build training service when training files change
 filename: cloudbuild/cloudbuild-training.yaml
 github:
@@ -6,9 +5,8 @@ github:
   owner: fkcurrie
   push:
     branch: ^main$
-id: 3091a847-aab4-42e6-8812-fad8fd28a232
 includedFiles:
 - training/**
 - requirements.txt
 name: training-auto-trigger
-resourceName: projects/gca-gke-2025/locations/us-central1/triggers/3091a847-aab4-42e6-8812-fad8fd28a232
+serviceAccount: projects/gca-gke-2025/serviceAccounts/764460891170-compute@developer.gserviceaccount.com
