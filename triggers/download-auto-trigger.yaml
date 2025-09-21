@@ -1,6 +1,6 @@
 createTime: '2025-09-20T22:00:09.076693061Z'
 description: Auto-build download service when download files change
-filename: cloudbuild-download.yaml
+filename: cloudbuild/cloudbuild-download.yaml
 github:
   name: zntic-train
   owner: fkcurrie

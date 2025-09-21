@@ -1,6 +1,6 @@
 createTime: '2025-09-20T21:59:53.530551852Z'
 description: Auto-build API service when API files change
-filename: cloudbuild-api.yaml
+filename: cloudbuild/cloudbuild-api.yaml
 github:
   name: zntic-train
   owner: fkcurrie

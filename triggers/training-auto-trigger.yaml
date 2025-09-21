@@ -1,6 +1,6 @@
 createTime: '2025-09-20T22:00:01.929899203Z'
 description: Auto-build training service when training files change
-filename: cloudbuild-training.yaml
+filename: cloudbuild/cloudbuild-training.yaml
 github:
   name: zntic-train
   owner: fkcurrie

@@ -1,6 +1,6 @@
 createTime: '2025-09-20T22:00:17.020779581Z'
 description: Auto-triggers for web interface changes
-filename: cloudbuild-web.yaml
+filename: cloudbuild/cloudbuild-web.yaml
 github:
   name: zntic-train
   owner: fkcurrie
